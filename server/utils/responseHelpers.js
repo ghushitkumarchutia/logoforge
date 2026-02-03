@@ -1,32 +1,46 @@
-/**
- * @file responseHelpers.js
- * @description Standardized API response formatting utilities
- *
- * @role
- * - Provides consistent response structure across all API endpoints
- * - Creates success responses with data and message
- * - Creates error responses with status code and message
- *
- * @exports
- * - successResponse: Function to send success response
- *   - Parameters: (res, statusCode, message, data)
- *   - Returns: JSON response { success: true, message, data }
- *
- * - errorResponse: Function to send error response
- *   - Parameters: (res, statusCode, message, errors)
- *   - Returns: JSON response { success: false, message, errors }
- *
- * - paginatedResponse: Function to send paginated data response
- *   - Parameters: (res, data, page, limit, total)
- *   - Returns: JSON with data, pagination info
- *
- * @imports
- * - None (pure utility functions)
- *
- * @usedBy
- * - controllers/authController.js
- * - controllers/projectController.js
- * - controllers/templateController.js
- * - controllers/iconController.js
- * - middleware/errorMiddleware.js
- */
+const successResponse = (res, statusCode, message, data = null) => {
+  const response = {
+    success: true,
+    message,
+  };
+
+  if (data !== null) {
+    response.data = data;
+  }
+
+  return res.status(statusCode).json(response);
+};
+
+const errorResponse = (res, statusCode, message, errors = null) => {
+  const response = {
+    success: false,
+    message,
+  };
+
+  if (errors !== null) {
+    response.errors = errors;
+  }
+
+  return res.status(statusCode).json(response);
+};
+
+const paginatedResponse = (res, data, page, limit, total) => {
+  return res.status(200).json({
+    success: true,
+    data,
+    pagination: {
+      currentPage: page,
+      totalPages: Math.ceil(total / limit),
+      totalItems: total,
+      itemsPerPage: limit,
+      hasNextPage: page < Math.ceil(total / limit),
+      hasPrevPage: page > 1,
+    },
+  });
+};
+
+module.exports = {
+  successResponse,
+  errorResponse,
+  paginatedResponse,
+};
