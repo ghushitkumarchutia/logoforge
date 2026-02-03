@@ -1,0 +1,32 @@
+{
+  "name": "logoforge",
+  "version": "1.0.0",
+  "description": "LogoForge - Professional Logo Design Tool",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
+    "dev:server": "cd server && npm run dev",
+    "dev:client": "cd client && npm run dev",
+    "start": "cd server && npm start",
+    "build": "cd client && npm run build",
+    "install:all": "npm install && cd server && npm install && cd ../client && npm install",
+    "lint": "cd server && npm run lint && cd ../client && npm run lint",
+    "seed": "cd server && npm run seed"
+  },
+  "keywords": [
+    "logo",
+    "design",
+    "fabric.js",
+    "react",
+    "express",
+    "mongodb"
+  ],
+  "author": "Ghushit Kumar Chutia",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "devDependencies": {
+    "concurrently": "^9.0.0"
+  }
+}

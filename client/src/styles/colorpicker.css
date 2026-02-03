@@ -1,0 +1,23 @@
+/**
+ * @file colorpicker.css
+ * @description react-colorful overrides (Vanilla CSS)
+ * 
+ * @role
+ * - Custom styling for react-colorful color picker
+ * - Size adjustments
+ * - Pointer/cursor styling
+ * - Border radius customization
+ * 
+ * @note
+ * - Vanilla CSS required to override library styles
+ * - Uses !important where necessary
+ * 
+ * @sections
+ * - .react-colorful: Main picker container
+ * - .react-colorful__saturation: Saturation area
+ * - .react-colorful__hue: Hue slider
+ * - .react-colorful__pointer: Selection pointer
+ * 
+ * @usedBy
+ * - components/editor/properties/ColorPicker.jsx
+ */

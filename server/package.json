@@ -1,0 +1,41 @@
+{
+  "name": "logoforge-server",
+  "version": "1.0.0",
+  "description": "LogoForge Backend API Server",
+  "main": "server.js",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "lint": "eslint .",
+    "seed": "node seeds/templateSeeds.js && node seeds/iconSeeds.js"
+  },
+  "keywords": [
+    "logo",
+    "design",
+    "api",
+    "express",
+    "mongodb"
+  ],
+  "author": "Ghushit Kumar Chutia",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.6",
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1",
+    "express-validator": "^7.3.1",
+    "helmet": "^8.1.0",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.1.5",
+    "morgan": "^1.10.1"
+  },
+  "devDependencies": {
+    "eslint": "^9.39.2",
+    "nodemon": "^3.1.11"
+  }
+}

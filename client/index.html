@@ -1,0 +1,43 @@
+<!doctype html>
+<!--
+  @file index.html
+  @description Main HTML entry point for LogoForge React app
+
+  @role
+  - Root HTML document for the SPA
+  - Contains #root element for React mounting
+  - SEO meta tags and favicon link
+  - Google Fonts preconnect for performance
+
+  @structure
+  - Head: charset, viewport, favicon, title, meta description, fonts
+  - Body: #root div, main.jsx script
+-->
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/logo.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="LogoForge - Professional logo design tool. Create stunning logos with our intuitive drag-and-drop editor."
+    />
+    <meta
+      name="keywords"
+      content="logo maker, logo design, branding, graphic design, logo creator"
+    />
+    <title>LogoForge - Professional Logo Design Tool</title>
+
+    <!-- Google Fonts Preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

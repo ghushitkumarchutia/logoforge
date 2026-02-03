@@ -1,0 +1,28 @@
+<!--
+  @file logo.svg
+  @description LogoForge application logo SVG
+
+  @role
+  - Brand logo for the application
+  - Used in navbar, favicon, auth pages
+  - Scalable vector graphic
+
+  @styling
+  - Green primary color (#22c55e)
+  - Modern, minimal design
+  - Represents forge/anvil + design motif
+-->
+<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40" fill="none">
+  <!-- Main forge/hammer icon -->
+  <rect width="40" height="40" rx="8" fill="url(#gradient)" />
+  <path d="M12 14h16v2H12zM14 18h12v8c0 2-2 4-4 4h-4c-2 0-4-2-4-4v-8z" fill="white" />
+  <rect x="18" y="10" width="4" height="6" rx="1" fill="white" />
+  
+  <!-- Gradient definition -->
+  <defs>
+    <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#22c55e" />
+      <stop offset="100%" style="stop-color:#16a34a" />
+    </linearGradient>
+  </defs>
+</svg>

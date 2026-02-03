@@ -1,0 +1,23 @@
+/**
+ * @file canvas.css
+ * @description Fabric.js canvas-specific styles (Vanilla CSS)
+ * 
+ * @role
+ * - Styles for Fabric.js canvas container
+ * - Canvas scrolling and overflow handling
+ * - Object selection controls styling
+ * - Grid overlay styling
+ * 
+ * @note
+ * - Vanilla CSS required for Fabric.js compatibility
+ * - Tailwind cannot style canvas internal elements
+ * 
+ * @sections
+ * - .canvas-container: Main canvas wrapper
+ * - .canvas-scrollable: Scrollable canvas area
+ * - .canvas-grid: Grid overlay styling
+ * - Fabric.js control overrides
+ * 
+ * @usedBy
+ * - components/editor/CanvasArea.jsx
+ */

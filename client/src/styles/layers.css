@@ -1,0 +1,23 @@
+/**
+ * @file layers.css
+ * @description Layer panel drag-drop styles (Vanilla CSS)
+ * 
+ * @role
+ * - Styles for layer panel drag and drop
+ * - Drag indicator styling
+ * - Drop zone highlighting
+ * 
+ * @note
+ * - Vanilla CSS required for native drag-drop API
+ * - Custom styling for drag feedback
+ * 
+ * @sections
+ * - .layer-item: Single layer row
+ * - .layer-item--dragging: During drag
+ * - .layer-item--drop-target: Drop zone indicator
+ * - .layer-drag-ghost: Drag preview styling
+ * 
+ * @usedBy
+ * - components/editor/layers/LayerPanel.jsx
+ * - components/editor/layers/LayerList.jsx
+ */

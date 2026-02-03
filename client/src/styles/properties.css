@@ -1,0 +1,23 @@
+/**
+ * @file properties.css
+ * @description Properties panel slider styles (Vanilla CSS)
+ * 
+ * @role
+ * - Custom styling for range input sliders
+ * - Cross-browser slider appearance
+ * - Thumb and track styling
+ * 
+ * @note
+ * - Vanilla CSS required for -webkit-slider-thumb
+ * - Cannot use Tailwind for pseudo-elements
+ * 
+ * @sections
+ * - input[type="range"]: Base range input
+ * - ::-webkit-slider-thumb: Chrome/Safari thumb
+ * - ::-moz-range-thumb: Firefox thumb
+ * - ::-webkit-slider-runnable-track: Track styling
+ * 
+ * @usedBy
+ * - components/editor/properties/OpacitySlider.jsx
+ * - components/editor/properties/PropertiesPanel.jsx
+ */

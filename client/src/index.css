@@ -1,0 +1,26 @@
+/**
+ * @file index.css
+ * @description Main CSS entry point with Tailwind directives
+ * 
+ * @role
+ * - Imports Tailwind CSS base, components, utilities
+ * - Imports Google Fonts (Inter, Outfit)
+ * - Imports canvas-specific vanilla CSS files
+ * - Base styles for html/body
+ * 
+ * @structure
+ * - @tailwind base;
+ * - @tailwind components;
+ * - @tailwind utilities;
+ * - Google Fonts import
+ * - Canvas-specific CSS imports
+ * 
+ * @imports
+ * - ./styles/canvas.css
+ * - ./styles/layers.css
+ * - ./styles/properties.css
+ * - ./styles/colorpicker.css
+ * 
+ * @usedBy
+ * - main.jsx (imported at application root)
+ */
