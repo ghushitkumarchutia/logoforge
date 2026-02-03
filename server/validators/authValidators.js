@@ -1,28 +1,46 @@
-/**
- * @file authValidators.js
- * @description Express-validator rules for authentication endpoints
- *
- * @role
- * - Validates registration input (username, email, password)
- * - Validates login input (email, password)
- * - Returns validation rules array for middleware chain
- *
- * @exports
- * - registerValidation: Array of validation rules for /register
- *   - username: required, 3-20 chars, alphanumeric + underscore
- *   - email: required, valid email format, normalized
- *   - password: required, min 8 chars, 1 uppercase, 1 lowercase, 1 number
- *
- * - loginValidation: Array of validation rules for /login
- *   - email: required, valid email format
- *   - password: required, not empty
- *
- * @imports
- * - { body } (from 'express-validator') - Validation chain builder
- *
- * @validationMessages
- * - Custom error messages for each field validation failure
- *
- * @usedBy
- * - routes/v1/authRoutes.js (applied as middleware)
- */
+const { body } = require("express-validator");
+
+const registerValidation = [
+  body("username")
+    .trim()
+    .notEmpty()
+    .withMessage("Username is required")
+    .isLength({ min: 3, max: 20 })
+    .withMessage("Username must be between 3 and 20 characters")
+    .matches(/^[a-zA-Z0-9_]+$/)
+    .withMessage("Username can only contain letters, numbers, and underscores"),
+
+  body("email")
+    .trim()
+    .notEmpty()
+    .withMessage("Email is required")
+    .isEmail()
+    .withMessage("Please provide a valid email address")
+    .normalizeEmail(),
+
+  body("password")
+    .notEmpty()
+    .withMessage("Password is required")
+    .isLength({ min: 8 })
+    .withMessage("Password must be at least 8 characters long")
+    .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/)
+    .withMessage(
+      "Password must contain at least one uppercase letter, one lowercase letter, and one number",
+    ),
+];
+
+const loginValidation = [
+  body("email")
+    .trim()
+    .notEmpty()
+    .withMessage("Email is required")
+    .isEmail()
+    .withMessage("Please provide a valid email address"),
+
+  body("password").notEmpty().withMessage("Password is required"),
+];
+
+module.exports = {
+  registerValidation,
+  loginValidation,
+};
