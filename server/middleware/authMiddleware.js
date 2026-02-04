@@ -1,35 +1,27 @@
-/**
- * @file authMiddleware.js
- * @description JWT authentication middleware for protected routes
- *
- * @role
- * - Extracts JWT token from httpOnly cookie
- * - Verifies token signature and expiration
- * - Attaches user object to request for downstream use
- * - Rejects unauthorized requests with 401 status
- *
- * @exports
- * - protect: Middleware function to protect routes
- *   - Checks for 'token' cookie
- *   - Verifies JWT using JWT_SECRET
- *   - Fetches user from database using decoded userId
- *   - Attaches user to req.user (excludes password)
- *   - Calls next() if authenticated, else returns 401
- *
- * @imports
- * - jwt (from 'jsonwebtoken') - JWT verification
- * - User (from '../models/User.js') - User model for lookup
- * - { errorResponse } (from '../utils/responseHelpers.js') - Error response
- *
- * @envVariables
- * - JWT_SECRET: Secret key for verifying tokens
- *
- * @errorResponses
- * - 401: 'Not authorized, no token'
- * - 401: 'Not authorized, token failed'
- * - 401: 'Not authorized, user not found'
- *
- * @usedBy
- * - routes/v1/authRoutes.js (GET /me)
- * - routes/v1/projectRoutes.js (all routes)
- */
+const jwt = require("jsonwebtoken");
+const User = require("../models/User");
+const { errorResponse } = require("../utils/responseHelpers");
+
+const protect = async (req, res, next) => {
+  const token = req.cookies.token;
+
+  if (!token) {
+    return errorResponse(res, 401, "Not authorized, no token");
+  }
+
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const user = await User.findById(decoded.id).select("-password");
+
+    if (!user) {
+      return errorResponse(res, 401, "Not authorized, user not found");
+    }
+
+    req.user = user;
+    next();
+  } catch (error) {
+    return errorResponse(res, 401, "Not authorized, token failed");
+  }
+};
+
+module.exports = { protect };

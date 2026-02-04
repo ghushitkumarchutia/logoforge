@@ -1,38 +1,55 @@
-/**
- * @file User.js
- * @description Mongoose schema and model for User collection
- *
- * @role
- * - Defines user data structure for authentication
- * - Validates user input (username, email, password)
- * - Hashes password before saving to database
- * - Provides method to compare passwords for login
- *
- * @schema
- * - username: String (required, unique, 3-20 chars, alphanumeric + underscore)
- * - email: String (required, unique, lowercase, valid email format)
- * - password: String (required, min 8 chars, hashed before save)
- * - createdAt: Date (auto-generated)
- * - updatedAt: Date (auto-updated)
- *
- * @exports
- * - User: Mongoose Model
- *
- * @imports
- * - mongoose (from 'mongoose') - MongoDB ODM
- * - { hashPassword, comparePassword } (from '../utils/hashPassword.js')
- *
- * @methods
- * - matchPassword(enteredPassword): Instance method to compare passwords
- *
- * @hooks
- * - pre('save'): Hash password if modified before saving
- *
- * @indexes
- * - email: unique index for fast lookup
- * - username: unique index for preventing duplicates
- *
- * @usedBy
- * - controllers/authController.js
- * - middleware/authMiddleware.js
- */
+const mongoose = require("mongoose");
+const { hashPassword, comparePassword } = require("../utils/hashPassword");
+
+const userSchema = new mongoose.Schema(
+  {
+    username: {
+      type: String,
+      required: [true, "Username is required"],
+      unique: true,
+      trim: true,
+      minlength: [3, "Username must be at least 3 characters"],
+      maxlength: [20, "Username cannot exceed 20 characters"],
+      match: [
+        /^[a-zA-Z0-9_]+$/,
+        "Username can only contain letters, numbers, and underscores",
+      ],
+    },
+    email: {
+      type: String,
+      required: [true, "Email is required"],
+      unique: true,
+      lowercase: true,
+      trim: true,
+      match: [/^\S+@\S+\.\S+$/, "Please provide a valid email address"],
+    },
+    password: {
+      type: String,
+      required: [true, "Password is required"],
+      minlength: [8, "Password must be at least 8 characters"],
+      select: false,
+    },
+  },
+  {
+    timestamps: true,
+  },
+);
+
+userSchema.index({ email: 1 }, { unique: true });
+userSchema.index({ username: 1 }, { unique: true });
+
+userSchema.pre("save", async function (next) {
+  if (!this.isModified("password")) {
+    return next();
+  }
+  this.password = await hashPassword(this.password);
+  next();
+});
+
+userSchema.methods.matchPassword = async function (enteredPassword) {
+  return comparePassword(enteredPassword, this.password);
+};
+
+const User = mongoose.model("User", userSchema);
+
+module.exports = User;

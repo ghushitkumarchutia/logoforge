@@ -1,31 +1,28 @@
-/**
- * @file errorMiddleware.js
- * @description Global error handling middleware for Express
- *
- * @role
- * - Catches all unhandled errors in the application
- * - Formats error responses consistently
- * - Logs errors in development mode
- * - Hides stack traces in production
- *
- * @exports
- * - notFound: Middleware for handling 404 routes
- *   - Creates error for undefined routes
- *   - Sets status to 404
- *   - Passes to error handler
- *
- * - errorHandler: Global error handler middleware
- *   - Parameters: (err, req, res, next)
- *   - Sets status code from error or defaults to 500
- *   - Returns JSON with error message
- *   - Includes stack trace only in development
- *
- * @imports
- * - { errorResponse } (from '../utils/responseHelpers.js') - Error response helper
- *
- * @envVariables
- * - NODE_ENV: Determines if stack trace is shown
- *
- * @usedBy
- * - server.js (applied after all routes as final middleware)
- */
+const { errorResponse } = require("../utils/responseHelpers");
+
+const notFound = (req, res, next) => {
+  const error = new Error(`Not Found - ${req.originalUrl}`);
+  res.status(404);
+  next(error);
+};
+
+const errorHandler = (err, req, res, next) => {
+  const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
+  const message = err.message || "Internal Server Error";
+
+  const response = {
+    success: false,
+    message,
+  };
+
+  if (process.env.NODE_ENV === "development") {
+    response.stack = err.stack;
+  }
+
+  return res.status(statusCode).json(response);
+};
+
+module.exports = {
+  notFound,
+  errorHandler,
+};
