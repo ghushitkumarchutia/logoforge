@@ -1,38 +1,21 @@
-/**
- * @file authRoutes.js
- * @description Express router for authentication endpoints
- *
- * @role
- * - Defines routes for user authentication
- * - Applies validation middleware to routes
- * - Connects controllers to route handlers
- *
- * @routes
- * - POST /register - Register new user
- *   - Middleware: registerValidation, validate
- *   - Controller: registerUser
- *
- * - POST /login - Login user
- *   - Middleware: loginValidation, validate
- *   - Controller: loginUser
- *
- * - POST /logout - Logout user (clear cookie)
- *   - Controller: logoutUser
- *
- * - GET /me - Get current authenticated user
- *   - Middleware: protect (auth required)
- *   - Controller: getMe
- *
- * @exports
- * - router: Express Router instance
- *
- * @imports
- * - express (from 'express') - Router
- * - { registerUser, loginUser, logoutUser, getMe } (from '../controllers/authController.js')
- * - { registerValidation, loginValidation } (from '../../validators/authValidators.js')
- * - { validate } (from '../../middleware/validateMiddleware.js')
- * - { protect } (from '../../middleware/authMiddleware.js')
- *
- * @usedBy
- * - routes/v1/index.js (mounted at /auth)
- */
+const express = require("express");
+const router = express.Router();
+const {
+  registerUser,
+  loginUser,
+  logoutUser,
+  getMe,
+} = require("../../controllers/authController");
+const {
+  registerValidation,
+  loginValidation,
+} = require("../../validators/authValidators");
+const { validate } = require("../../middleware/validateMiddleware");
+const { protect } = require("../../middleware/authMiddleware");
+
+router.post("/register", registerValidation, validate, registerUser);
+router.post("/login", loginValidation, validate, loginUser);
+router.post("/logout", logoutUser);
+router.get("/me", protect, getMe);
+
+module.exports = router;
