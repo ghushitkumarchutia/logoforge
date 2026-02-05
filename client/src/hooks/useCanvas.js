@@ -1,52 +1,273 @@
-/**
- * @file useCanvas.js
- * @description Custom hook for Fabric.js canvas operations
- *
- * @role
- * - Manages Fabric.js canvas instance
- * - Provides methods for adding/removing objects
- * - Handles object selection and modification
- * - Serializes canvas for save/load
- *
- * @exports
- * - useCanvas: (canvasRef) => CanvasHookReturn
- *   - canvas: Fabric.Canvas instance
- *   - selectedObject: Currently selected object
- *   - objects: Array of all canvas objects
- *
- *   - initCanvas: () => void - Initialize canvas
- *   - addShape: (type, options?) => void - Add shape
- *   - addText: (text, options?) => void - Add text
- *   - addIcon: (svgPath, viewBox) => void - Add icon
- *   - removeSelected: () => void - Delete selected
- *   - duplicateSelected: () => void - Clone selected
- *
- *   - setFillColor: (color) => void
- *   - setStrokeColor: (color) => void
- *   - setOpacity: (value) => void
- *   - setFontSize: (size) => void
- *   - setFontFamily: (family) => void
- *
- *   - bringForward: () => void - Layer up
- *   - sendBackward: () => void - Layer down
- *   - bringToFront: () => void - Top layer
- *   - sendToBack: () => void - Bottom layer
- *
- *   - getCanvasJSON: () => Object - Serialize
- *   - loadFromJSON: (json) => Promise - Deserialize
- *   - clearCanvas: () => void
- *
- * @imports
- * - { useState, useEffect, useCallback } (from 'react')
- * - { fabric } (from 'fabric') - Fabric.js
- * - { createRectangle, createCircle, ... } (from '../utils/canvasHelpers.js')
- * - { CANVAS_DEFAULTS } (from '../utils/constants.js')
- *
- * @events
- * - Listens to: object:added, object:removed, object:modified, selection:created
- * - Updates state when canvas changes
- *
- * @usedBy
- * - components/editor/CanvasArea.jsx
- * - contexts/CanvasContext.jsx
- */
+import { useState, useEffect, useCallback } from "react";
+import { Canvas, FabricImage, Path } from "fabric";
+import {
+  createRectangle,
+  createCircle,
+  createTriangle,
+  createLine,
+  createText,
+  centerObjectOnCanvas,
+} from "../utils/canvasHelpers";
+import { CANVAS_DEFAULTS } from "../utils/constants";
+
+export const useCanvas = (canvasRef) => {
+  const [canvas, setCanvas] = useState(null);
+  const [selectedObject, setSelectedObject] = useState(null);
+  const [objects, setObjects] = useState([]);
+
+  const initCanvas = useCallback(() => {
+    if (!canvasRef.current || canvas) return;
+
+    const fabricCanvas = new Canvas(canvasRef.current, {
+      width: CANVAS_DEFAULTS.width,
+      height: CANVAS_DEFAULTS.height,
+      backgroundColor: CANVAS_DEFAULTS.backgroundColor,
+      selection: true,
+      preserveObjectStacking: true,
+    });
+
+    fabricCanvas.on("selection:created", (e) => {
+      setSelectedObject(e.selected?.[0] || null);
+    });
+
+    fabricCanvas.on("selection:updated", (e) => {
+      setSelectedObject(e.selected?.[0] || null);
+    });
+
+    fabricCanvas.on("selection:cleared", () => {
+      setSelectedObject(null);
+    });
+
+    fabricCanvas.on("object:added", () => {
+      setObjects(fabricCanvas.getObjects());
+    });
+
+    fabricCanvas.on("object:removed", () => {
+      setObjects(fabricCanvas.getObjects());
+    });
+
+    setCanvas(fabricCanvas);
+  }, [canvasRef, canvas]);
+
+  useEffect(() => {
+    return () => {
+      if (canvas) {
+        canvas.dispose();
+      }
+    };
+  }, [canvas]);
+
+  const addShape = useCallback(
+    (type, options = {}) => {
+      if (!canvas) return;
+
+      let shape;
+      switch (type) {
+        case "rectangle":
+          shape = createRectangle(options);
+          break;
+        case "circle":
+          shape = createCircle(options);
+          break;
+        case "triangle":
+          shape = createTriangle(options);
+          break;
+        case "line":
+          shape = createLine(undefined, options);
+          break;
+        default:
+          return;
+      }
+
+      canvas.add(shape);
+      centerObjectOnCanvas(canvas, shape);
+      canvas.setActiveObject(shape);
+      canvas.renderAll();
+    },
+    [canvas],
+  );
+
+  const addText = useCallback(
+    (text = "Text", options = {}) => {
+      if (!canvas) return;
+
+      const textObj = createText(text, options);
+      canvas.add(textObj);
+      centerObjectOnCanvas(canvas, textObj);
+      canvas.setActiveObject(textObj);
+      canvas.renderAll();
+    },
+    [canvas],
+  );
+
+  const addIcon = useCallback(
+    (svgPath, viewBox = "0 0 24 24") => {
+      if (!canvas) return;
+
+      const path = new Path(svgPath, {
+        left: 100,
+        top: 100,
+        fill: "#374151",
+        scaleX: 2,
+        scaleY: 2,
+      });
+
+      canvas.add(path);
+      centerObjectOnCanvas(canvas, path);
+      canvas.setActiveObject(path);
+      canvas.renderAll();
+    },
+    [canvas],
+  );
+
+  const removeSelected = useCallback(() => {
+    if (!canvas) return;
+    const active = canvas.getActiveObject();
+    if (active) {
+      canvas.remove(active);
+      canvas.discardActiveObject();
+      canvas.renderAll();
+    }
+  }, [canvas]);
+
+  const duplicateSelected = useCallback(() => {
+    if (!canvas) return;
+    const active = canvas.getActiveObject();
+    if (!active) return;
+
+    active.clone((cloned) => {
+      cloned.set({
+        left: active.left + 10,
+        top: active.top + 10,
+      });
+      canvas.add(cloned);
+      canvas.setActiveObject(cloned);
+      canvas.renderAll();
+    });
+  }, [canvas]);
+
+  const setFillColor = useCallback(
+    (color) => {
+      if (!canvas || !selectedObject) return;
+      selectedObject.set("fill", color);
+      canvas.renderAll();
+    },
+    [canvas, selectedObject],
+  );
+
+  const setStrokeColor = useCallback(
+    (color) => {
+      if (!canvas || !selectedObject) return;
+      selectedObject.set("stroke", color);
+      canvas.renderAll();
+    },
+    [canvas, selectedObject],
+  );
+
+  const setOpacity = useCallback(
+    (value) => {
+      if (!canvas || !selectedObject) return;
+      selectedObject.set("opacity", value);
+      canvas.renderAll();
+    },
+    [canvas, selectedObject],
+  );
+
+  const setFontSize = useCallback(
+    (size) => {
+      if (!canvas || !selectedObject || selectedObject.type !== "i-text")
+        return;
+      selectedObject.set("fontSize", size);
+      canvas.renderAll();
+    },
+    [canvas, selectedObject],
+  );
+
+  const setFontFamily = useCallback(
+    (family) => {
+      if (!canvas || !selectedObject || selectedObject.type !== "i-text")
+        return;
+      selectedObject.set("fontFamily", family);
+      canvas.renderAll();
+    },
+    [canvas, selectedObject],
+  );
+
+  const bringForward = useCallback(() => {
+    if (!canvas || !selectedObject) return;
+    canvas.bringObjectForward(selectedObject);
+    canvas.renderAll();
+  }, [canvas, selectedObject]);
+
+  const sendBackward = useCallback(() => {
+    if (!canvas || !selectedObject) return;
+    canvas.sendObjectBackwards(selectedObject);
+    canvas.renderAll();
+  }, [canvas, selectedObject]);
+
+  const bringToFront = useCallback(() => {
+    if (!canvas || !selectedObject) return;
+    canvas.bringObjectToFront(selectedObject);
+    canvas.renderAll();
+  }, [canvas, selectedObject]);
+
+  const sendToBack = useCallback(() => {
+    if (!canvas || !selectedObject) return;
+    canvas.sendObjectToBack(selectedObject);
+    canvas.renderAll();
+  }, [canvas, selectedObject]);
+
+  const getCanvasJSON = useCallback(() => {
+    if (!canvas) return null;
+    return canvas.toJSON();
+  }, [canvas]);
+
+  const loadFromJSON = useCallback(
+    (json) => {
+      return new Promise((resolve) => {
+        if (!canvas) {
+          resolve();
+          return;
+        }
+        canvas.loadFromJSON(json, () => {
+          canvas.renderAll();
+          setObjects(canvas.getObjects());
+          resolve();
+        });
+      });
+    },
+    [canvas],
+  );
+
+  const clearCanvas = useCallback(() => {
+    if (!canvas) return;
+    canvas.clear();
+    canvas.backgroundColor = CANVAS_DEFAULTS.backgroundColor;
+    canvas.renderAll();
+    setObjects([]);
+  }, [canvas]);
+
+  return {
+    canvas,
+    selectedObject,
+    objects,
+    initCanvas,
+    addShape,
+    addText,
+    addIcon,
+    removeSelected,
+    duplicateSelected,
+    setFillColor,
+    setStrokeColor,
+    setOpacity,
+    setFontSize,
+    setFontFamily,
+    bringForward,
+    sendBackward,
+    bringToFront,
+    sendToBack,
+    getCanvasJSON,
+    loadFromJSON,
+    clearCanvas,
+  };
+};

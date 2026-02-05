@@ -1,39 +1,86 @@
-/**
- * @file useKeyboardShortcuts.js
- * @description Custom hook for keyboard shortcut handling
- *
- * @role
- * - Registers global keyboard event listeners
- * - Maps keyboard shortcuts to actions
- * - Prevents default browser behavior for shortcuts
- *
- * @exports
- * - useKeyboardShortcuts: (handlers) => void
- *   - handlers: Object mapping shortcuts to functions
- *
- * @shortcuts
- * - Ctrl/Cmd + Z: Undo
- * - Ctrl/Cmd + Y: Redo
- * - Ctrl/Cmd + Shift + Z: Redo (alternative)
- * - Ctrl/Cmd + C: Copy
- * - Ctrl/Cmd + V: Paste
- * - Ctrl/Cmd + X: Cut
- * - Ctrl/Cmd + D: Duplicate
- * - Ctrl/Cmd + S: Save (prevent default, trigger save)
- * - Delete/Backspace: Delete selected object
- * - Escape: Deselect all
- *
- * @imports
- * - { useEffect, useCallback } (from 'react')
- *
- * @behavior
- * - Adds keydown listener on mount
- * - Removes listener on unmount
- * - Checks for Ctrl/Cmd modifier
- * - Prevents default for handled shortcuts
- * - Only active when not typing in input/textarea
- *
- * @usedBy
- * - components/editor/CanvasArea.jsx
- * - pages/EditorPage.jsx
- */
+import { useEffect, useCallback } from "react";
+
+export const useKeyboardShortcuts = (handlers) => {
+  const handleKeyDown = useCallback(
+    (event) => {
+      const target = event.target;
+      const tagName = target.tagName.toLowerCase();
+
+      if (
+        tagName === "input" ||
+        tagName === "textarea" ||
+        target.isContentEditable
+      ) {
+        return;
+      }
+
+      const isMac = navigator.platform.toUpperCase().indexOf("MAC") >= 0;
+      const modifier = isMac ? event.metaKey : event.ctrlKey;
+
+      if (modifier && event.key === "z" && !event.shiftKey) {
+        event.preventDefault();
+        handlers.onUndo?.();
+        return;
+      }
+
+      if (
+        modifier &&
+        (event.key === "y" || (event.key === "z" && event.shiftKey))
+      ) {
+        event.preventDefault();
+        handlers.onRedo?.();
+        return;
+      }
+
+      if (modifier && event.key === "c") {
+        event.preventDefault();
+        handlers.onCopy?.();
+        return;
+      }
+
+      if (modifier && event.key === "v") {
+        event.preventDefault();
+        handlers.onPaste?.();
+        return;
+      }
+
+      if (modifier && event.key === "x") {
+        event.preventDefault();
+        handlers.onCut?.();
+        return;
+      }
+
+      if (modifier && event.key === "d") {
+        event.preventDefault();
+        handlers.onDuplicate?.();
+        return;
+      }
+
+      if (modifier && event.key === "s") {
+        event.preventDefault();
+        handlers.onSave?.();
+        return;
+      }
+
+      if (event.key === "Delete" || event.key === "Backspace") {
+        event.preventDefault();
+        handlers.onDelete?.();
+        return;
+      }
+
+      if (event.key === "Escape") {
+        event.preventDefault();
+        handlers.onDeselect?.();
+        return;
+      }
+    },
+    [handlers],
+  );
+
+  useEffect(() => {
+    window.addEventListener("keydown", handleKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [handleKeyDown]);
+};

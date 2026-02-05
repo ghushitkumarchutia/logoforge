@@ -1,37 +1,79 @@
-/**
- * @file useClipboard.js
- * @description Custom hook for copy/paste functionality
- *
- * @role
- * - Handles copy, cut, paste operations for canvas objects
- * - Stores clipboard data in memory (not system clipboard)
- * - Pastes with offset to show duplicate
- *
- * @exports
- * - useClipboard: (canvas) => ClipboardHookReturn
- *   - hasClipboard: Boolean - Has copied object
- *   - copy: () => void - Copy selected object
- *   - cut: () => void - Copy and delete selected
- *   - paste: () => void - Paste with offset
- *   - duplicate: () => void - Copy and paste immediately
- *
- * @state
- * - clipboardData: Serialized fabric object JSON
- *
- * @configuration
- * - Paste offset: 10px right and down from original
- *
- * @imports
- * - { useState, useCallback } (from 'react')
- * - { cloneObject } (from '../utils/canvasHelpers.js')
- *
- * @behavior
- * - copy: Serializes selected object to JSON, stores in state
- * - cut: Copies then removes from canvas
- * - paste: Deserializes, adds to canvas with offset
- * - duplicate: Copy + paste in one action
- *
- * @usedBy
- * - hooks/useKeyboardShortcuts.js (Ctrl+C, Ctrl+V, Ctrl+X)
- * - components/editor/Toolbar.jsx
- */
+import { useState, useCallback } from "react";
+
+export const useClipboard = (canvas) => {
+  const [clipboardData, setClipboardData] = useState(null);
+
+  const copy = useCallback(() => {
+    if (!canvas) return;
+    const activeObject = canvas.getActiveObject();
+    if (!activeObject) return;
+
+    activeObject.clone((cloned) => {
+      setClipboardData(cloned);
+    });
+  }, [canvas]);
+
+  const cut = useCallback(() => {
+    if (!canvas) return;
+    const activeObject = canvas.getActiveObject();
+    if (!activeObject) return;
+
+    activeObject.clone((cloned) => {
+      setClipboardData(cloned);
+      canvas.remove(activeObject);
+      canvas.discardActiveObject();
+      canvas.renderAll();
+    });
+  }, [canvas]);
+
+  const paste = useCallback(() => {
+    if (!canvas || !clipboardData) return;
+
+    clipboardData.clone((cloned) => {
+      cloned.set({
+        left: cloned.left + 10,
+        top: cloned.top + 10,
+        evented: true,
+      });
+
+      if (cloned.type === "activeSelection") {
+        cloned.canvas = canvas;
+        cloned.forEachObject((obj) => {
+          canvas.add(obj);
+        });
+        cloned.setCoords();
+      } else {
+        canvas.add(cloned);
+      }
+
+      canvas.setActiveObject(cloned);
+      canvas.renderAll();
+    });
+  }, [canvas, clipboardData]);
+
+  const duplicate = useCallback(() => {
+    if (!canvas) return;
+    const activeObject = canvas.getActiveObject();
+    if (!activeObject) return;
+
+    activeObject.clone((cloned) => {
+      cloned.set({
+        left: activeObject.left + 10,
+        top: activeObject.top + 10,
+        evented: true,
+      });
+
+      canvas.add(cloned);
+      canvas.setActiveObject(cloned);
+      canvas.renderAll();
+    });
+  }, [canvas]);
+
+  return {
+    hasClipboard: !!clipboardData,
+    copy,
+    cut,
+    paste,
+    duplicate,
+  };
+};

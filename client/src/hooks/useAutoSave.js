@@ -1,40 +1,59 @@
-/**
- * @file useAutoSave.js
- * @description Custom hook for automatic project saving
- *
- * @role
- * - Automatically saves project at regular intervals
- * - Detects canvas changes before saving
- * - Shows save status and last saved time
- *
- * @exports
- * - useAutoSave: (projectId, canvas, enabled) => AutoSaveHookReturn
- *   - isSaving: Boolean - Save in progress
- *   - lastSaved: Date - Last successful save time
- *   - hasUnsavedChanges: Boolean - Changes since last save
- *   - saveNow: () => Promise - Manual save trigger
- *   - setHasChanges: (boolean) => void - Mark changes
- *
- * @configuration
- * - Interval: AUTOSAVE_INTERVAL (2 minutes from constants.js)
- * - Only saves when hasUnsavedChanges is true
- * - Only saves when projectId exists (saved project)
- *
- * @imports
- * - { useState, useEffect, useCallback, useRef } (from 'react')
- * - { updateProject } (from '../services/projectService.js')
- * - { AUTOSAVE_INTERVAL } (from '../utils/constants.js')
- * - { generateThumbnail } (from '../utils/canvasHelpers.js')
- * - toast (from 'react-hot-toast') - Notifications
- *
- * @behavior
- * - Sets up interval timer on mount
- * - Clears timer on unmount
- * - Checks hasUnsavedChanges before saving
- * - Shows toast on success/failure
- * - Updates lastSaved timestamp
- *
- * @usedBy
- * - pages/EditorPage.jsx
- * - components/editor/EditorLayout.jsx
- */
+import { useState, useCallback, useRef, useEffect } from "react";
+import { updateProject } from "../services/projectService";
+import { AUTOSAVE_INTERVAL } from "../utils/constants";
+import { generateThumbnail } from "../utils/canvasHelpers";
+import toast from "react-hot-toast";
+
+export const useAutoSave = (projectId, canvas, enabled = true) => {
+  const [isSaving, setIsSaving] = useState(false);
+  const [lastSaved, setLastSaved] = useState(null);
+  const [hasUnsavedChanges, setHasChanges] = useState(false);
+  const intervalRef = useRef(null);
+
+  const saveNow = useCallback(async () => {
+    if (!projectId || !canvas || !hasUnsavedChanges) return;
+
+    setIsSaving(true);
+    try {
+      const canvasData = canvas.toJSON();
+      const thumbnail = generateThumbnail(canvas);
+
+      await updateProject(projectId, {
+        canvasData,
+        thumbnail,
+      });
+
+      setLastSaved(new Date());
+      setHasChanges(false);
+      toast.success("Project saved");
+    } catch {
+      toast.error("Failed to save project");
+    } finally {
+      setIsSaving(false);
+    }
+  }, [projectId, canvas, hasUnsavedChanges]);
+
+  useEffect(() => {
+    if (!enabled || !projectId) return;
+
+    intervalRef.current = setInterval(() => {
+      if (hasUnsavedChanges) {
+        saveNow();
+      }
+    }, AUTOSAVE_INTERVAL);
+
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+      }
+    };
+  }, [enabled, projectId, hasUnsavedChanges, saveNow]);
+
+  return {
+    isSaving,
+    lastSaved,
+    hasUnsavedChanges,
+    saveNow,
+    setHasChanges,
+  };
+};
