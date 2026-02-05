@@ -1,35 +1,52 @@
-/**
- * @file Template.js
- * @description Mongoose schema and model for Template collection
- *
- * @role
- * - Stores pre-made design templates for quick-start
- * - Templates are loaded by users to begin new projects
- * - Organized by categories (Logo, Banner, Card, Poster)
- *
- * @schema
- * - name: String (required, unique) - Template display name
- * - category: String (required, enum: ['Logo', 'Banner', 'Card', 'Poster'])
- * - canvasData: Object (required) - Pre-configured Fabric.js canvas state
- *   - version: String
- *   - objects: Array
- *   - background: String
- * - thumbnail: String (required) - Preview image URL or Base64
- * - isPublic: Boolean (default: true) - Visibility to all users
- * - createdBy: ObjectId (ref: 'User') - Admin who created template
- * - createdAt: Date (auto-generated)
- *
- * @exports
- * - Template: Mongoose Model
- *
- * @imports
- * - mongoose (from 'mongoose') - MongoDB ODM
- *
- * @indexes
- * - category: index for filtering by category
- * - isPublic: index for fetching public templates
- *
- * @usedBy
- * - controllers/templateController.js
- * - seeds/templateSeeds.js
- */
+const mongoose = require("mongoose");
+
+const templateSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: [true, "Template name is required"],
+      unique: true,
+      trim: true,
+    },
+    category: {
+      type: String,
+      required: [true, "Category is required"],
+      enum: {
+        values: ["Logo", "Banner", "Card", "Poster"],
+        message: "Category must be Logo, Banner, Card, or Poster",
+      },
+    },
+    canvasData: {
+      type: Object,
+      required: [true, "Canvas data is required"],
+      validate: {
+        validator: function (v) {
+          return v && Array.isArray(v.objects);
+        },
+        message: "Canvas data must contain an objects array",
+      },
+    },
+    thumbnail: {
+      type: String,
+      required: [true, "Thumbnail is required"],
+    },
+    isPublic: {
+      type: Boolean,
+      default: true,
+    },
+    createdBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+  },
+  {
+    timestamps: true,
+  },
+);
+
+templateSchema.index({ category: 1 });
+templateSchema.index({ isPublic: 1 });
+
+const Template = mongoose.model("Template", templateSchema);
+
+module.exports = Template;
