@@ -1,38 +1,69 @@
-/**
- * @file AuthContext.jsx
- * @description React Context for authentication state management
- *
- * @role
- * - Provides global authentication state to entire app
- * - Manages user session, login, logout, registration
- * - Checks authentication status on app load
- *
- * @exports
- * - AuthContext: React Context object
- * - AuthProvider: Provider component wrapping children
- *   - Provides: { user, isAuthenticated, isLoading, login, register, logout, checkAuth }
- *
- * @contextValue
- * - user: User object { id, username, email, createdAt } or null
- * - isAuthenticated: Boolean
- * - isLoading: Boolean (initial auth check in progress)
- * - login: (email, password) => Promise
- * - register: (username, email, password) => Promise
- * - logout: () => Promise
- * - checkAuth: () => Promise (verify session with GET /auth/me)
- *
- * @imports
- * - { createContext, useState, useEffect, useCallback } (from 'react')
- * - { registerUser, loginUser, logoutUser, getCurrentUser } (from '../services/authService.js')
- * - { useNavigate } (from 'react-router-dom')
- *
- * @behavior
- * - On mount: Calls checkAuth() to verify existing session
- * - Login: Calls API, sets user state, navigates to dashboard
- * - Logout: Calls API, clears user state, navigates to login
- *
- * @usedBy
- * - App.jsx (wraps entire app)
- * - hooks/useAuth.js
- * - components/auth/ProtectedRoute.jsx
- */
+import { createContext, useState, useEffect, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
+import {
+  registerUser,
+  loginUser,
+  logoutUser,
+  getCurrentUser,
+} from "../services/authService";
+
+export const AuthContext = createContext(null);
+
+export const AuthProvider = ({ children }) => {
+  const [user, setUser] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const navigate = useNavigate();
+
+  const checkAuth = useCallback(async () => {
+    try {
+      const response = await getCurrentUser();
+      if (response.success && response.data?.user) {
+        setUser(response.data.user);
+      }
+    } catch {
+      setUser(null);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    checkAuth();
+  }, [checkAuth]);
+
+  const login = async (email, password) => {
+    const response = await loginUser({ email, password });
+    if (response.success && response.data?.user) {
+      setUser(response.data.user);
+      navigate("/dashboard");
+    }
+    return response;
+  };
+
+  const register = async (username, email, password) => {
+    const response = await registerUser({ username, email, password });
+    if (response.success && response.data?.user) {
+      setUser(response.data.user);
+      navigate("/dashboard");
+    }
+    return response;
+  };
+
+  const logout = async () => {
+    await logoutUser();
+    setUser(null);
+    navigate("/login");
+  };
+
+  const value = {
+    user,
+    isAuthenticated: !!user,
+    isLoading,
+    login,
+    register,
+    logout,
+    checkAuth,
+  };
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+};
