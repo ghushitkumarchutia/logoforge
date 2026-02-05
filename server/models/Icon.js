@@ -1,32 +1,44 @@
-/**
- * @file Icon.js
- * @description Mongoose schema and model for Icon collection
- *
- * @role
- * - Stores SVG icons for the icon library feature
- * - Icons can be added to canvas as Fabric.js path objects
- * - Organized by categories with searchable keywords
- *
- * @schema
- * - name: String (required, unique) - Icon display name (e.g., 'briefcase')
- * - category: String (required, enum: ['Business', 'Social', 'General', 'Technology'])
- * - svgPath: String (required) - SVG path data (d attribute)
- * - viewBox: String (required) - SVG viewBox attribute (e.g., '0 0 24 24')
- * - keywords: [String] - Search keywords for filtering
- * - createdAt: Date (auto-generated)
- *
- * @exports
- * - Icon: Mongoose Model
- *
- * @imports
- * - mongoose (from 'mongoose') - MongoDB ODM
- *
- * @indexes
- * - category: index for filtering by category
- * - keywords: text index for search functionality
- * - name: unique index
- *
- * @usedBy
- * - controllers/iconController.js
- * - seeds/iconSeeds.js
- */
+const mongoose = require("mongoose");
+
+const iconSchema = new mongoose.Schema(
+  {
+    name: {
+      type: String,
+      required: [true, "Icon name is required"],
+      unique: true,
+      trim: true,
+    },
+    category: {
+      type: String,
+      required: [true, "Category is required"],
+      enum: {
+        values: ["Business", "Social", "General", "Technology"],
+        message: "Category must be Business, Social, General, or Technology",
+      },
+    },
+    svgPath: {
+      type: String,
+      required: [true, "SVG path is required"],
+    },
+    viewBox: {
+      type: String,
+      required: [true, "ViewBox is required"],
+      default: "0 0 24 24",
+    },
+    keywords: {
+      type: [String],
+      default: [],
+    },
+  },
+  {
+    timestamps: true,
+  },
+);
+
+iconSchema.index({ category: 1 });
+iconSchema.index({ name: 1 }, { unique: true });
+iconSchema.index({ keywords: "text", name: "text" });
+
+const Icon = mongoose.model("Icon", iconSchema);
+
+module.exports = Icon;

@@ -1,29 +1,61 @@
-/**
- * @file iconController.js
- * @description Controller functions for icon library endpoints
- *
- * @role
- * - Handles retrieval of SVG icons for the icon library
- * - Icons are public and available to all users
- * - Supports filtering by category and search by keywords
- *
- * @exports
- * - getIcons: GET /api/v1/icons
- *   - Fetches all icons or filtered by category
- *   - Query params:
- *     - ?category=Business|Social|General|Technology
- *     - ?search=keyword (searches name and keywords)
- *   - Returns: { icons: [{ id, name, category, svgPath, viewBox }] }
- *
- * - getIconsByCategory: GET /api/v1/icons/category/:category
- *   - Fetches icons for specific category
- *   - Returns: { icons: [...] }
- *   - Error: 400 if invalid category
- *
- * @imports
- * - Icon (from '../models/Icon.js') - Icon model
- * - { successResponse, errorResponse } (from '../utils/responseHelpers.js')
- *
- * @usedBy
- * - routes/v1/iconRoutes.js
- */
+const Icon = require("../models/Icon");
+const { successResponse, errorResponse } = require("../utils/responseHelpers");
+
+const VALID_CATEGORIES = ["Business", "Social", "General", "Technology"];
+
+const getIcons = async (req, res) => {
+  try {
+    const { category, search } = req.query;
+    let filter = {};
+
+    if (category) {
+      filter.category = category;
+    }
+
+    if (search) {
+      filter.$or = [
+        { name: { $regex: search, $options: "i" } },
+        { keywords: { $regex: search, $options: "i" } },
+      ];
+    }
+
+    const icons = await Icon.find(filter)
+      .select("name category svgPath viewBox")
+      .sort({ name: 1 });
+
+    return successResponse(res, 200, "Icons retrieved successfully", {
+      icons,
+    });
+  } catch (error) {
+    return errorResponse(res, 500, "Server error fetching icons");
+  }
+};
+
+const getIconsByCategory = async (req, res) => {
+  try {
+    const { category } = req.params;
+
+    if (!VALID_CATEGORIES.includes(category)) {
+      return errorResponse(
+        res,
+        400,
+        "Invalid category. Must be Business, Social, General, or Technology",
+      );
+    }
+
+    const icons = await Icon.find({ category })
+      .select("name category svgPath viewBox")
+      .sort({ name: 1 });
+
+    return successResponse(res, 200, "Icons retrieved successfully", {
+      icons,
+    });
+  } catch (error) {
+    return errorResponse(res, 500, "Server error fetching icons");
+  }
+};
+
+module.exports = {
+  getIcons,
+  getIconsByCategory,
+};
