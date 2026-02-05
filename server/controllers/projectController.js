@@ -1,48 +1,122 @@
-/**
- * @file projectController.js
- * @description Controller functions for project CRUD operations
- *
- * @role
- * - Handles project creation, retrieval, update, and deletion
- * - All operations scoped to authenticated user's projects
- * - Manages canvas data serialization and thumbnail generation
- *
- * @exports
- * - getProjects: GET /api/v1/projects
- *   - Fetches all projects for authenticated user
- *   - Sorted by updatedAt descending (recent first)
- *   - Returns: { projects: [{ id, projectName, thumbnail, createdAt, updatedAt }] }
- *   - Supports pagination via ?page=1&limit=10
- *
- * - getProjectById: GET /api/v1/projects/:id
- *   - Fetches single project by ID
- *   - Verifies ownership (userId matches req.user)
- *   - Returns full project with canvasData
- *   - Error: 404 if not found, 403 if not owner
- *
- * - createProject: POST /api/v1/projects
- *   - Creates new project for authenticated user
- *   - Sets userId from req.user._id
- *   - Accepts: { projectName, canvasData, thumbnail, tags }
- *   - Returns: created project object
- *
- * - updateProject: PUT /api/v1/projects/:id
- *   - Updates existing project
- *   - Verifies ownership before update
- *   - Updates: projectName, canvasData, thumbnail, tags
- *   - Auto-updates updatedAt timestamp
- *   - Error: 404 if not found, 403 if not owner
- *
- * - deleteProject: DELETE /api/v1/projects/:id
- *   - Deletes project by ID
- *   - Verifies ownership before deletion
- *   - Returns: success message
- *   - Error: 404 if not found, 403 if not owner
- *
- * @imports
- * - Project (from '../models/Project.js') - Project model
- * - { successResponse, errorResponse, paginatedResponse } (from '../utils/responseHelpers.js')
- *
- * @usedBy
- * - routes/v1/projectRoutes.js
- */
+const Project = require("../models/Project");
+const {
+  successResponse,
+  errorResponse,
+  paginatedResponse,
+} = require("../utils/responseHelpers");
+
+const getProjects = async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    const total = await Project.countDocuments({ userId: req.user._id });
+    const projects = await Project.find({ userId: req.user._id })
+      .select("projectName thumbnail tags createdAt updatedAt")
+      .sort({ updatedAt: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    return paginatedResponse(res, projects, page, limit, total);
+  } catch (error) {
+    return errorResponse(res, 500, "Server error fetching projects");
+  }
+};
+
+const getProjectById = async (req, res) => {
+  try {
+    const project = await Project.findById(req.params.id);
+
+    if (!project) {
+      return errorResponse(res, 404, "Project not found");
+    }
+
+    if (project.userId.toString() !== req.user._id.toString()) {
+      return errorResponse(res, 403, "Not authorized to access this project");
+    }
+
+    return successResponse(res, 200, "Project retrieved successfully", {
+      project,
+    });
+  } catch (error) {
+    return errorResponse(res, 500, "Server error fetching project");
+  }
+};
+
+const createProject = async (req, res) => {
+  try {
+    const { projectName, canvasData, thumbnail, tags } = req.body;
+
+    const project = await Project.create({
+      userId: req.user._id,
+      projectName: projectName || "Untitled Project",
+      canvasData,
+      thumbnail: thumbnail || "",
+      tags: tags || [],
+    });
+
+    return successResponse(res, 201, "Project created successfully", {
+      project,
+    });
+  } catch (error) {
+    return errorResponse(res, 500, "Server error creating project");
+  }
+};
+
+const updateProject = async (req, res) => {
+  try {
+    const project = await Project.findById(req.params.id);
+
+    if (!project) {
+      return errorResponse(res, 404, "Project not found");
+    }
+
+    if (project.userId.toString() !== req.user._id.toString()) {
+      return errorResponse(res, 403, "Not authorized to update this project");
+    }
+
+    const { projectName, canvasData, thumbnail, tags } = req.body;
+
+    if (projectName !== undefined) project.projectName = projectName;
+    if (canvasData !== undefined) project.canvasData = canvasData;
+    if (thumbnail !== undefined) project.thumbnail = thumbnail;
+    if (tags !== undefined) project.tags = tags;
+
+    await project.save();
+
+    return successResponse(res, 200, "Project updated successfully", {
+      project,
+    });
+  } catch (error) {
+    return errorResponse(res, 500, "Server error updating project");
+  }
+};
+
+const deleteProject = async (req, res) => {
+  try {
+    const project = await Project.findById(req.params.id);
+
+    if (!project) {
+      return errorResponse(res, 404, "Project not found");
+    }
+
+    if (project.userId.toString() !== req.user._id.toString()) {
+      return errorResponse(res, 403, "Not authorized to delete this project");
+    }
+
+    await project.deleteOne();
+
+    return successResponse(res, 200, "Project deleted successfully");
+  } catch (error) {
+    return errorResponse(res, 500, "Server error deleting project");
+  }
+};
+
+module.exports = {
+  getProjects,
+  getProjectById,
+  createProject,
+  updateProject,
+  deleteProject,
+};

@@ -1,35 +1,47 @@
-/**
- * @file Project.js
- * @description Mongoose schema and model for Project collection
- *
- * @role
- * - Stores user's design projects with canvas data
- * - Links projects to users via userId reference
- * - Stores canvas state as JSON for save/load functionality
- * - Generates thumbnails for dashboard display
- *
- * @schema
- * - userId: ObjectId (required, ref: 'User') - Owner of the project
- * - projectName: String (required, 1-50 chars, default: 'Untitled Project')
- * - canvasData: Object (required) - Fabric.js canvas JSON state
- *   - version: String - Fabric.js version
- *   - objects: Array - Canvas objects (shapes, text, icons)
- *   - background: String - Canvas background color
- * - thumbnail: String - Base64 encoded preview image or URL
- * - tags: [String] - Optional tags for categorization
- * - createdAt: Date (auto-generated)
- * - updatedAt: Date (auto-updated on save)
- *
- * @exports
- * - Project: Mongoose Model
- *
- * @imports
- * - mongoose (from 'mongoose') - MongoDB ODM
- *
- * @indexes
- * - userId: index for fetching user's projects
- * - { userId, updatedAt }: compound index for sorting by recent
- *
- * @usedBy
- * - controllers/projectController.js
- */
+const mongoose = require("mongoose");
+
+const projectSchema = new mongoose.Schema(
+  {
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: [true, "User ID is required"],
+    },
+    projectName: {
+      type: String,
+      required: [true, "Project name is required"],
+      trim: true,
+      minlength: [1, "Project name cannot be empty"],
+      maxlength: [50, "Project name cannot exceed 50 characters"],
+      default: "Untitled Project",
+    },
+    canvasData: {
+      type: Object,
+      required: [true, "Canvas data is required"],
+      validate: {
+        validator: function (v) {
+          return v && Array.isArray(v.objects);
+        },
+        message: "Canvas data must contain an objects array",
+      },
+    },
+    thumbnail: {
+      type: String,
+      default: "",
+    },
+    tags: {
+      type: [String],
+      default: [],
+    },
+  },
+  {
+    timestamps: true,
+  },
+);
+
+projectSchema.index({ userId: 1 });
+projectSchema.index({ userId: 1, updatedAt: -1 });
+
+const Project = mongoose.model("Project", projectSchema);
+
+module.exports = Project;
