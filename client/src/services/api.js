@@ -1,42 +1,51 @@
-/**
- * @file api.js
- * @description Axios instance configuration for API calls
- *
- * @role
- * - Creates configured Axios instance with base URL
- * - Sets up request/response interceptors
- * - Handles authentication token automatically
- * - Manages error responses globally
- *
- * @exports
- * - api: Configured Axios instance
- *   - Base URL from VITE_API_BASE_URL
- *   - Credentials included for cookies
- *   - JSON content type header
- *
- * @configuration
- * - baseURL: VITE_API_BASE_URL (e.g., http://localhost:5000/api/v1)
- * - withCredentials: true (sends cookies with requests)
- * - timeout: 10000 (10 second timeout)
- * - headers: { 'Content-Type': 'application/json' }
- *
- * @interceptors
- * - Request: Logs request in development
- * - Response: Extracts data, handles 401 (redirect to login)
- *
- * @errorHandling
- * - 401: Clears auth state, redirects to login
- * - 403: Shows unauthorized message
- * - 500: Shows server error message
- * - Network error: Shows connection error
- *
- * @imports
- * - axios (from 'axios') - HTTP client
- * - { API_BASE_URL } (from '../utils/constants.js')
- *
- * @usedBy
- * - services/authService.js
- * - services/projectService.js
- * - services/templateService.js
- * - services/iconService.js
- */
+import axios from "axios";
+import { API_BASE_URL } from "../utils/constants";
+
+const api = axios.create({
+  baseURL: API_BASE_URL,
+  withCredentials: true,
+  timeout: 10000,
+  headers: {
+    "Content-Type": "application/json",
+  },
+});
+
+api.interceptors.request.use(
+  (config) => {
+    if (import.meta.env.DEV) {
+      console.log(`[API] ${config.method?.toUpperCase()} ${config.url}`);
+    }
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
+  },
+);
+
+api.interceptors.response.use(
+  (response) => {
+    return response.data;
+  },
+  (error) => {
+    if (error.response) {
+      const { status, data } = error.response;
+
+      if (status === 401) {
+        window.location.href = "/login";
+      }
+
+      const errorMessage = data?.message || "An error occurred";
+      return Promise.reject(new Error(errorMessage));
+    }
+
+    if (error.request) {
+      return Promise.reject(
+        new Error("Network error. Please check your connection."),
+      );
+    }
+
+    return Promise.reject(new Error("Request failed. Please try again."));
+  },
+);
+
+export default api;

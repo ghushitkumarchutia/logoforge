@@ -1,35 +1,55 @@
-/**
- * @file iconService.js
- * @description Icon library API service functions
- *
- * @role
- * - Handles icon retrieval API calls
- * - Communicates with /api/v1/icons endpoints
- * - Provides fallback to default icons if API fails
- *
- * @exports
- * - getAllIcons: (category?, search?) => Promise
- *   - GET /icons or /icons?category=X&search=Y
- *   - Returns: { icons: [{ id, name, category, svgPath, viewBox }] }
- *
- * - getIconsByCategory: (category) => Promise
- *   - GET /icons/category/:category
- *   - category: 'Business' | 'Social' | 'General' | 'Technology'
- *   - Returns: { icons: [...] }
- *
- * - searchIcons: (query) => Promise
- *   - GET /icons?search=query
- *   - Searches by name and keywords
- *   - Returns: { icons: [...] }
- *
- * @imports
- * - api (from './api.js') - Configured Axios instance
- * - { defaultIcons } (from '../data/defaultIcons.js') - Fallback icons
- *
- * @fallbackBehavior
- * - If API fails, returns defaultIcons from data file
- * - Logs warning in console for debugging
- *
- * @usedBy
- * - components/editor/modals/IconLibraryModal.jsx
- */
+import api from "./api";
+import { defaultIcons } from "../data/defaultIcons";
+
+export const getAllIcons = async (category, search) => {
+  try {
+    const params = new URLSearchParams();
+    if (category) params.append("category", category);
+    if (search) params.append("search", search);
+
+    const queryString = params.toString();
+    const url = queryString ? `/icons?${queryString}` : "/icons";
+
+    const response = await api.get(url);
+    return response;
+  } catch (error) {
+    console.warn(
+      "Failed to fetch icons from API, using defaults:",
+      error.message,
+    );
+    return { success: true, data: { icons: defaultIcons } };
+  }
+};
+
+export const getIconsByCategory = async (category) => {
+  try {
+    const response = await api.get(`/icons/category/${category}`);
+    return response;
+  } catch (error) {
+    console.warn(
+      "Failed to fetch icons by category, using defaults:",
+      error.message,
+    );
+    const filtered = defaultIcons.filter((icon) => icon.category === category);
+    return { success: true, data: { icons: filtered } };
+  }
+};
+
+export const searchIcons = async (query) => {
+  try {
+    const response = await api.get(
+      `/icons?search=${encodeURIComponent(query)}`,
+    );
+    return response;
+  } catch (error) {
+    console.warn("Failed to search icons, using defaults:", error.message);
+    const filtered = defaultIcons.filter(
+      (icon) =>
+        icon.name.toLowerCase().includes(query.toLowerCase()) ||
+        icon.keywords.some((k) =>
+          k.toLowerCase().includes(query.toLowerCase()),
+        ),
+    );
+    return { success: true, data: { icons: filtered } };
+  }
+};
