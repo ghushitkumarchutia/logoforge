@@ -1,28 +1,41 @@
-/**
- * @file SocialAuth.jsx
- * @description Social login buttons (UI only)
- *
- * @role
- * - Displays social login options (UI demonstration)
- * - No actual OAuth integration (placement project)
- * - Shows Google, GitHub buttons
- *
- * @exports
- * - SocialAuth: React Component
- *
- * @structure
- * - Divider with "or continue with" text
- * - Social login buttons (Google, GitHub)
- *
- * @imports
- * - Button (from '../common/Button.jsx')
- * - { Chrome, Github } (from 'lucide-react')
- *
- * @note
- * - This is UI only - no actual OAuth implementation
- * - Can be extended with real OAuth in future
- *
- * @usedBy
- * - pages/LoginPage.jsx (below LoginForm)
- * - pages/RegisterPage.jsx (below RegisterForm)
- */
+import { Button } from "../common/Button";
+import { Chrome, Github } from "lucide-react";
+import toast from "react-hot-toast";
+
+export const SocialAuth = () => {
+  const handleSocialAuth = (provider) => {
+    toast.info(`${provider} login coming soon!`);
+  };
+
+  return (
+    <div className='mt-6'>
+      <div className='relative'>
+        <div className='absolute inset-0 flex items-center'>
+          <div className='w-full border-t border-gray-600' />
+        </div>
+        <div className='relative flex justify-center text-sm'>
+          <span className='px-2 bg-transparent text-gray-400'>
+            or continue with
+          </span>
+        </div>
+      </div>
+
+      <div className='mt-6 grid grid-cols-2 gap-3'>
+        <Button
+          variant='outline'
+          onClick={() => handleSocialAuth("Google")}
+          leftIcon={<Chrome size={18} />}
+        >
+          Google
+        </Button>
+        <Button
+          variant='outline'
+          onClick={() => handleSocialAuth("GitHub")}
+          leftIcon={<Github size={18} />}
+        >
+          GitHub
+        </Button>
+      </div>
+    </div>
+  );
+};

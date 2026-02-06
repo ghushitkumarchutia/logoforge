@@ -1,27 +1,32 @@
-/**
- * @file Card.jsx
- * @description Reusable card container component
- *
- * @role
- * - Provides styled card wrapper for content
- * - Consistent border, shadow, padding
- * - Optional hover effects
- *
- * @exports
- * - Card: React Component
- *
- * @props
- * - children: ReactNode - Card content
- * - className: String - Additional classes
- * - hoverable: Boolean - Adds hover shadow effect
- * - padding: 'none' | 'sm' | 'md' | 'lg' (default: 'md')
- * - onClick: Function - Optional click handler
- *
- * @imports
- * - clsx (from 'clsx')
- *
- * @usedBy
- * - components/dashboard/ProjectCard.jsx
- * - components/landing/FeatureCard.jsx
- * - components/auth/AuthCard.jsx
- */
+import clsx from "clsx";
+
+const paddingClasses = {
+  none: "p-0",
+  sm: "p-3",
+  md: "p-5",
+  lg: "p-8",
+};
+
+export const Card = ({
+  children,
+  className,
+  hoverable = false,
+  padding = "md",
+  onClick,
+}) => {
+  return (
+    <div
+      className={clsx(
+        "bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700",
+        paddingClasses[padding],
+        hoverable &&
+          "cursor-pointer transition-shadow duration-200 hover:shadow-lg",
+        onClick && "cursor-pointer",
+        className,
+      )}
+      onClick={onClick}
+    >
+      {children}
+    </div>
+  );
+};

@@ -1,25 +1,21 @@
-/**
- * @file AuthRedirect.jsx
- * @description Redirects authenticated users away from auth pages
- *
- * @role
- * - Prevents logged-in users from seeing login/register pages
- * - Redirects to dashboard if already authenticated
- *
- * @exports
- * - AuthRedirect: React Component
- *
- * @props
- * - children: ReactNode - Auth page content
- *
- * @behavior
- * - If authenticated, redirects to /dashboard
- * - If not authenticated, renders children
- *
- * @imports
- * - { Navigate } (from 'react-router-dom')
- * - { useAuth } (from '../../hooks/useAuth.js')
- *
- * @usedBy
- * - App.jsx (wraps LoginPage, RegisterPage routes)
- */
+import { Navigate } from "react-router-dom";
+import { useAuth } from "../../hooks/useAuth";
+import { Loader } from "../common/Loader";
+
+export const AuthRedirect = ({ children }) => {
+  const { isAuthenticated, isLoading } = useAuth();
+
+  if (isLoading) {
+    return (
+      <div className='min-h-screen flex items-center justify-center bg-gray-100 dark:bg-gray-900'>
+        <Loader size='lg' />
+      </div>
+    );
+  }
+
+  if (isAuthenticated) {
+    return <Navigate to='/dashboard' replace />;
+  }
+
+  return children;
+};

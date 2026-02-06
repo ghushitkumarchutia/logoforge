@@ -1,23 +1,91 @@
-/**
- * @file canvas.css
- * @description Fabric.js canvas-specific styles (Vanilla CSS)
- * 
- * @role
- * - Styles for Fabric.js canvas container
- * - Canvas scrolling and overflow handling
- * - Object selection controls styling
- * - Grid overlay styling
- * 
- * @note
- * - Vanilla CSS required for Fabric.js compatibility
- * - Tailwind cannot style canvas internal elements
- * 
- * @sections
- * - .canvas-container: Main canvas wrapper
- * - .canvas-scrollable: Scrollable canvas area
- * - .canvas-grid: Grid overlay styling
- * - Fabric.js control overrides
- * 
- * @usedBy
- * - components/editor/CanvasArea.jsx
- */
+.canvas-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: #e5e7eb;
+}
+
+.dark .canvas-container {
+  background-color: #1f2937;
+}
+
+.canvas-scrollable {
+  position: absolute;
+  inset: 0;
+  overflow: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+}
+
+.canvas-grid {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to right, rgba(0, 0, 0, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
+  background-size: 20px 20px;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.canvas-grid--visible {
+  opacity: 1;
+}
+
+.dark .canvas-grid {
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+}
+
+.canvas-wrapper {
+  box-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.canvas-lower-canvas,
+.canvas-upper-canvas {
+  border-radius: 8px;
+}
+
+.canvas-container .canvas-container {
+  background: transparent !important;
+}
+
+.canvas-controls-wrapper {
+  position: absolute;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 16px;
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 9999px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(8px);
+}
+
+.dark .canvas-controls-wrapper {
+  background: rgba(31, 41, 55, 0.9);
+}
+
+.canvas-zoom-display {
+  min-width: 60px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+}
+
+.dark .canvas-zoom-display {
+  color: #e5e7eb;
+}

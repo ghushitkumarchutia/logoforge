@@ -1,32 +1,31 @@
-/**
- * @file GlassCard.jsx
- * @description Glassmorphism card effect component
- *
- * @role
- * - Creates frosted glass card effect
- * - Modern UI aesthetic for landing page
- * - Backdrop blur with semi-transparent background
- *
- * @exports
- * - GlassCard: React Component
- *
- * @props
- * - children: ReactNode - Card content
- * - className: String - Additional classes
- * - blur: 'sm' | 'md' | 'lg' (default: 'md')
- * - opacity: Number 0-100 (default: 20)
- * - border: Boolean - Show subtle border (default: true)
- *
- * @styling
- * - backdrop-filter: blur()
- * - Semi-transparent background
- * - Subtle border
- * - Dark mode compatible
- *
- * @imports
- * - clsx (from 'clsx')
- *
- * @usedBy
- * - components/landing/FeatureCard.jsx
- * - components/landing/PricingCard.jsx
- */
+import clsx from "clsx";
+
+const blurMap = {
+  sm: "backdrop-blur-sm",
+  md: "backdrop-blur-md",
+  lg: "backdrop-blur-lg",
+};
+
+export const GlassCard = ({
+  children,
+  className,
+  blur = "md",
+  opacity = 20,
+  border = true,
+}) => {
+  return (
+    <div
+      className={clsx(
+        "rounded-2xl",
+        blurMap[blur],
+        border && "border border-white/10 dark:border-white/5",
+        className,
+      )}
+      style={{
+        backgroundColor: `rgba(255, 255, 255, ${opacity / 100})`,
+      }}
+    >
+      {children}
+    </div>
+  );
+};

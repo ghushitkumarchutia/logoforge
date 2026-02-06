@@ -1,28 +1,37 @@
-/**
- * @file EditorLayout.jsx
- * @description Main editor layout wrapper
- *
- * @role
- * - Organizes editor UI (toolbar, canvas, sidebars)
- * - Provides layout structure for editor page
- * - Handles responsive layout adjustments
- *
- * @exports
- * - EditorLayout: React Component
- *
- * @structure
- * - Toolbar (top)
- * - LayerPanel (left sidebar)
- * - CanvasArea (center)
- * - PropertiesPanel (right sidebar)
- *
- * @imports
- * - { useState } (from 'react')
- * - Toolbar (from './Toolbar.jsx')
- * - CanvasArea (from './CanvasArea.jsx')
- * - LayerPanel (from './layers/LayerPanel.jsx')
- * - PropertiesPanel (from './properties/PropertiesPanel.jsx')
- *
- * @usedBy
- * - pages/EditorPage.jsx
- */
+import { useState, useCallback } from "react";
+import { Toolbar } from "./Toolbar.jsx";
+import { CanvasArea } from "./CanvasArea.jsx";
+import { LayerPanel } from "./layers/LayerPanel.jsx";
+import { PropertiesPanel } from "./properties/PropertiesPanel.jsx";
+
+export const EditorLayout = ({ onSave, isSaving = false }) => {
+  const [leftCollapsed, setLeftCollapsed] = useState(false);
+  const [rightCollapsed, setRightCollapsed] = useState(false);
+
+  const handleLeftToggle = useCallback(() => {
+    setLeftCollapsed((prev) => !prev);
+  }, []);
+
+  const handleRightToggle = useCallback(() => {
+    setRightCollapsed((prev) => !prev);
+  }, []);
+
+  return (
+    <div className='flex flex-col h-screen bg-gray-100 dark:bg-gray-900'>
+      <Toolbar onSave={onSave} isSaving={isSaving} />
+
+      <div className='flex flex-1 overflow-hidden'>
+        <LayerPanel collapsed={leftCollapsed} onToggle={handleLeftToggle} />
+
+        <main className='flex-1 overflow-hidden'>
+          <CanvasArea />
+        </main>
+
+        <PropertiesPanel
+          collapsed={rightCollapsed}
+          onToggle={handleRightToggle}
+        />
+      </div>
+    </div>
+  );
+};

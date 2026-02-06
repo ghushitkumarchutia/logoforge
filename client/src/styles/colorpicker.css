@@ -1,23 +1,115 @@
-/**
- * @file colorpicker.css
- * @description react-colorful overrides (Vanilla CSS)
- * 
- * @role
- * - Custom styling for react-colorful color picker
- * - Size adjustments
- * - Pointer/cursor styling
- * - Border radius customization
- * 
- * @note
- * - Vanilla CSS required to override library styles
- * - Uses !important where necessary
- * 
- * @sections
- * - .react-colorful: Main picker container
- * - .react-colorful__saturation: Saturation area
- * - .react-colorful__hue: Hue slider
- * - .react-colorful__pointer: Selection pointer
- * 
- * @usedBy
- * - components/editor/properties/ColorPicker.jsx
- */
+.react-colorful {
+  width: 100% !important;
+  height: 200px !important;
+  border-radius: 8px !important;
+  overflow: hidden;
+}
+
+.react-colorful__saturation {
+  border-radius: 8px 8px 0 0 !important;
+}
+
+.react-colorful__last-control {
+  border-radius: 0 0 8px 8px !important;
+}
+
+.react-colorful__hue,
+.react-colorful__alpha {
+  height: 16px !important;
+  border-radius: 0 !important;
+}
+
+.react-colorful__pointer {
+  width: 20px !important;
+  height: 20px !important;
+  border-width: 3px !important;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+}
+
+.react-colorful__saturation-pointer {
+  width: 20px !important;
+  height: 20px !important;
+  transform: translate(-50%, -50%) !important;
+}
+
+.react-colorful__hue-pointer,
+.react-colorful__alpha-pointer {
+  width: 20px !important;
+  height: 20px !important;
+  border-radius: 50% !important;
+}
+
+.color-picker-container {
+  padding: 12px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+}
+
+.dark .color-picker-container {
+  background: #1f2937;
+}
+
+.color-picker-presets {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  gap: 6px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.dark .color-picker-presets {
+  border-top-color: #374151;
+}
+
+.color-preset {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 6px;
+  cursor: pointer;
+  transition:
+    transform 0.15s,
+    box-shadow 0.15s;
+  border: 2px solid transparent;
+}
+
+.color-preset:hover {
+  transform: scale(1.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.color-preset--active {
+  border-color: #22c55e;
+}
+
+.color-input-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.color-input-hex {
+  flex: 1;
+  padding: 8px 12px;
+  font-size: 14px;
+  font-family: monospace;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #f9fafb;
+  color: #374151;
+  text-transform: uppercase;
+}
+
+.dark .color-input-hex {
+  background: #374151;
+  border-color: #4b5563;
+  color: #e5e7eb;
+}
+
+.color-input-hex:focus {
+  outline: none;
+  border-color: #22c55e;
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
+}

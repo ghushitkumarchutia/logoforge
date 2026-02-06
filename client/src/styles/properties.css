@@ -1,23 +1,188 @@
-/**
- * @file properties.css
- * @description Properties panel slider styles (Vanilla CSS)
- * 
- * @role
- * - Custom styling for range input sliders
- * - Cross-browser slider appearance
- * - Thumb and track styling
- * 
- * @note
- * - Vanilla CSS required for -webkit-slider-thumb
- * - Cannot use Tailwind for pseudo-elements
- * 
- * @sections
- * - input[type="range"]: Base range input
- * - ::-webkit-slider-thumb: Chrome/Safari thumb
- * - ::-moz-range-thumb: Firefox thumb
- * - ::-webkit-slider-runnable-track: Track styling
- * 
- * @usedBy
- * - components/editor/properties/OpacitySlider.jsx
- * - components/editor/properties/PropertiesPanel.jsx
- */
+.properties-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 6px;
+  border-radius: 3px;
+  background: #e5e7eb;
+  outline: none;
+  transition: background 0.2s;
+}
+
+.dark .properties-slider {
+  background: #374151;
+}
+
+.properties-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #22c55e;
+  cursor: pointer;
+  border: 3px solid #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition:
+    transform 0.15s,
+    box-shadow 0.15s;
+}
+
+.properties-slider::-webkit-slider-thumb:hover {
+  transform: scale(1.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.25);
+}
+
+.properties-slider::-webkit-slider-thumb:active {
+  transform: scale(0.95);
+}
+
+.properties-slider::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #22c55e;
+  cursor: pointer;
+  border: 3px solid #ffffff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition:
+    transform 0.15s,
+    box-shadow 0.15s;
+}
+
+.properties-slider::-moz-range-thumb:hover {
+  transform: scale(1.1);
+}
+
+.properties-slider::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: 3px;
+}
+
+.properties-slider::-moz-range-track {
+  height: 6px;
+  border-radius: 3px;
+  background: #e5e7eb;
+}
+
+.dark .properties-slider::-moz-range-track {
+  background: #374151;
+}
+
+.properties-slider-filled {
+  background: linear-gradient(
+    to right,
+    #22c55e var(--fill-percent, 50%),
+    #e5e7eb var(--fill-percent, 50%)
+  );
+}
+
+.dark .properties-slider-filled {
+  background: linear-gradient(
+    to right,
+    #22c55e var(--fill-percent, 50%),
+    #374151 var(--fill-percent, 50%)
+  );
+}
+
+.properties-section {
+  padding: 16px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.dark .properties-section {
+  border-bottom-color: #374151;
+}
+
+.properties-section-title {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #6b7280;
+  margin-bottom: 12px;
+}
+
+.dark .properties-section-title {
+  color: #9ca3af;
+}
+
+.properties-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.properties-row:last-child {
+  margin-bottom: 0;
+}
+
+.properties-label {
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+  flex-shrink: 0;
+}
+
+.dark .properties-label {
+  color: #e5e7eb;
+}
+
+.properties-input {
+  width: 80px;
+  padding: 6px 10px;
+  font-size: 14px;
+  text-align: center;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  background: #f9fafb;
+  color: #374151;
+}
+
+.dark .properties-input {
+  background: #374151;
+  border-color: #4b5563;
+  color: #e5e7eb;
+}
+
+.properties-input:focus {
+  outline: none;
+  border-color: #22c55e;
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
+}
+
+.properties-color-swatch {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  cursor: pointer;
+  border: 2px solid #e5e7eb;
+  transition:
+    transform 0.15s,
+    box-shadow 0.15s;
+}
+
+.dark .properties-color-swatch {
+  border-color: #4b5563;
+}
+
+.properties-color-swatch:hover {
+  transform: scale(1.05);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+.properties-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+  color: #6b7280;
+}
+
+.dark .properties-empty {
+  color: #9ca3af;
+}

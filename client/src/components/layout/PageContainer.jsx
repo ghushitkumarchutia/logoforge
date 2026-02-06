@@ -1,26 +1,30 @@
-/**
- * @file PageContainer.jsx
- * @description Page wrapper with consistent padding and max-width
- *
- * @role
- * - Provides consistent page layout wrapper
- * - Centers content with max-width
- * - Adds responsive padding
- *
- * @exports
- * - PageContainer: React Component
- *
- * @props
- * - children: ReactNode - Page content
- * - className: String - Additional classes
- * - maxWidth: 'sm' | 'md' | 'lg' | 'xl' | '2xl' | 'full' (default: '2xl')
- * - padding: Boolean - Add horizontal padding (default: true)
- *
- * @imports
- * - clsx (from 'clsx')
- *
- * @usedBy
- * - pages/LandingPage.jsx (for sections)
- * - pages/DashboardPage.jsx
- * - pages/ProfilePage.jsx
- */
+import clsx from "clsx";
+
+const maxWidthClasses = {
+  sm: "max-w-screen-sm",
+  md: "max-w-screen-md",
+  lg: "max-w-screen-lg",
+  xl: "max-w-screen-xl",
+  "2xl": "max-w-screen-2xl",
+  full: "max-w-full",
+};
+
+export const PageContainer = ({
+  children,
+  className,
+  maxWidth = "2xl",
+  padding = true,
+}) => {
+  return (
+    <div
+      className={clsx(
+        "mx-auto w-full",
+        maxWidthClasses[maxWidth],
+        padding && "px-4 sm:px-6 lg:px-8",
+        className,
+      )}
+    >
+      {children}
+    </div>
+  );
+};

@@ -1,20 +1,12 @@
-/**
- * @file CreateProjectBtn.jsx
- * @description Button to create new project
- *
- * @role
- * - CTA button to start a new design project
- * - Links to editor page without project ID
- *
- * @exports
- * - CreateProjectBtn: React Component
- *
- * @imports
- * - { Link } (from 'react-router-dom')
- * - Button (from '../common/Button.jsx')
- * - { Plus } (from 'lucide-react')
- * - { ROUTES } (from '../../utils/constants.js')
- *
- * @usedBy
- * - pages/DashboardPage.jsx
- */
+import { Link } from "react-router-dom";
+import { Button } from "../common/Button";
+import { Plus } from "lucide-react";
+import { ROUTES } from "../../utils/constants";
+
+export const CreateProjectBtn = () => {
+  return (
+    <Link to={ROUTES.EDITOR}>
+      <Button leftIcon={<Plus size={20} />}>New Project</Button>
+    </Link>
+  );
+};

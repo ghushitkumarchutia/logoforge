@@ -1,25 +1,31 @@
-/**
- * @file ProjectGrid.jsx
- * @description Grid of project cards for dashboard
- *
- * @role
- * - Displays projects in responsive grid layout
- * - Shows skeleton loaders while loading
- * - Handles empty state when no projects
- *
- * @exports
- * - ProjectGrid: React Component
- *
- * @props
- * - projects: Array of project objects
- * - isLoading: Boolean - Loading state
- * - onDelete: Function - Delete handler passed to cards
- *
- * @imports
- * - ProjectCard (from './ProjectCard.jsx')
- * - Skeleton (from '../common/Skeleton.jsx')
- * - EmptyState (from './EmptyState.jsx')
- *
- * @usedBy
- * - pages/DashboardPage.jsx
- */
+import { ProjectCard } from "./ProjectCard";
+import { Skeleton } from "../common/Skeleton";
+import { EmptyState } from "./EmptyState";
+
+export const ProjectGrid = ({ projects, isLoading, onDelete }) => {
+  if (isLoading) {
+    return (
+      <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'>
+        {[...Array(8)].map((_, i) => (
+          <Skeleton key={i} variant='card' />
+        ))}
+      </div>
+    );
+  }
+
+  if (!projects || projects.length === 0) {
+    return <EmptyState />;
+  }
+
+  return (
+    <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'>
+      {projects.map((project) => (
+        <ProjectCard
+          key={project._id || project.id}
+          project={project}
+          onDelete={onDelete}
+        />
+      ))}
+    </div>
+  );
+};

@@ -1,23 +1,148 @@
-/**
- * @file layers.css
- * @description Layer panel drag-drop styles (Vanilla CSS)
- * 
- * @role
- * - Styles for layer panel drag and drop
- * - Drag indicator styling
- * - Drop zone highlighting
- * 
- * @note
- * - Vanilla CSS required for native drag-drop API
- * - Custom styling for drag feedback
- * 
- * @sections
- * - .layer-item: Single layer row
- * - .layer-item--dragging: During drag
- * - .layer-item--drop-target: Drop zone indicator
- * - .layer-drag-ghost: Drag preview styling
- * 
- * @usedBy
- * - components/editor/layers/LayerPanel.jsx
- * - components/editor/layers/LayerList.jsx
- */
+.layer-list {
+  padding: 8px;
+}
+
+.layer-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  margin-bottom: 4px;
+  background: #ffffff;
+  border-radius: 8px;
+  cursor: pointer;
+  transition:
+    background-color 0.15s,
+    transform 0.15s,
+    box-shadow 0.15s;
+  user-select: none;
+}
+
+.dark .layer-item {
+  background: #374151;
+}
+
+.layer-item:hover {
+  background: #f3f4f6;
+}
+
+.dark .layer-item:hover {
+  background: #4b5563;
+}
+
+.layer-item--selected {
+  background: #dcfce7 !important;
+  border: 1px solid #22c55e;
+}
+
+.dark .layer-item--selected {
+  background: rgba(34, 197, 94, 0.2) !important;
+  border-color: #22c55e;
+}
+
+.layer-item--dragging {
+  opacity: 0.5;
+  transform: scale(0.98);
+}
+
+.layer-item--drop-target {
+  border: 2px dashed #22c55e;
+  background: rgba(34, 197, 94, 0.1);
+}
+
+.layer-item--drop-above::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: -2px;
+  height: 3px;
+  background: #22c55e;
+  border-radius: 3px;
+}
+
+.layer-item--drop-below::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -2px;
+  height: 3px;
+  background: #22c55e;
+  border-radius: 3px;
+}
+
+.layer-drag-ghost {
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  padding: 8px 16px;
+  background: #22c55e;
+  color: #ffffff;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  opacity: 0.9;
+}
+
+.layer-thumbnail {
+  width: 32px;
+  height: 32px;
+  border-radius: 4px;
+  background: #e5e7eb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.dark .layer-thumbnail {
+  background: #1f2937;
+}
+
+.layer-name {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 500;
+  color: #374151;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dark .layer-name {
+  color: #e5e7eb;
+}
+
+.layer-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity 0.15s;
+}
+
+.layer-item:hover .layer-actions {
+  opacity: 1;
+}
+
+.layer-action-btn {
+  padding: 4px;
+  border-radius: 4px;
+  color: #6b7280;
+  transition:
+    background-color 0.15s,
+    color 0.15s;
+}
+
+.layer-action-btn:hover {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+.dark .layer-action-btn:hover {
+  background: #1f2937;
+  color: #e5e7eb;
+}

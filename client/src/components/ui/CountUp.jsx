@@ -1,28 +1,51 @@
-/**
- * @file CountUp.jsx
- * @description Animated number counter component
- *
- * @role
- * - Animates numbers counting up from 0 to target
- * - Triggers when scrolled into view
- * - Used for statistics section
- *
- * @exports
- * - CountUp: React Component
- *
- * @props
- * - end: Number - Target number to count to
- * - start: Number - Starting number (default: 0)
- * - duration: Number in seconds (default: 2)
- * - prefix: String - Text before number (e.g., '$')
- * - suffix: String - Text after number (e.g., '+', 'K')
- * - decimals: Number - Decimal places (default: 0)
- * - className: String - Additional classes
- *
- * @imports
- * - { useState, useEffect, useRef } (from 'react')
- * - { useInView } (from 'framer-motion')
- *
- * @usedBy
- * - components/landing/Stats.jsx
- */
+import { useState, useEffect, useRef } from "react";
+import { useInView } from "framer-motion";
+
+export const CountUp = ({
+  end,
+  start = 0,
+  duration = 2,
+  prefix = "",
+  suffix = "",
+  decimals = 0,
+  className,
+}) => {
+  const [count, setCount] = useState(start);
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once: true });
+  const hasAnimated = useRef(false);
+
+  useEffect(() => {
+    if (!isInView || hasAnimated.current) return;
+
+    hasAnimated.current = true;
+    const startTime = performance.now();
+    const range = end - start;
+
+    const animate = (currentTime) => {
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / (duration * 1000), 1);
+      const easeProgress = 1 - Math.pow(1 - progress, 3);
+      const currentValue = start + range * easeProgress;
+
+      setCount(currentValue);
+
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      }
+    };
+
+    requestAnimationFrame(animate);
+  }, [isInView, start, end, duration]);
+
+  const displayValue =
+    decimals > 0 ? count.toFixed(decimals) : Math.floor(count);
+
+  return (
+    <span ref={ref} className={className}>
+      {prefix}
+      {displayValue}
+      {suffix}
+    </span>
+  );
+};

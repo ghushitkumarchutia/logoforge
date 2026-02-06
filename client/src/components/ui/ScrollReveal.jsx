@@ -1,30 +1,46 @@
-/**
- * @file ScrollReveal.jsx
- * @description Fade-in animation on scroll wrapper
- *
- * @role
- * - Reveals children with animation when scrolled into view
- * - Uses Intersection Observer for performance
- * - Multiple animation variants
- *
- * @exports
- * - ScrollReveal: React Component
- *
- * @props
- * - children: ReactNode - Content to reveal
- * - direction: 'up' | 'down' | 'left' | 'right' (default: 'up')
- * - distance: Number - Animation distance in pixels (default: 30)
- * - duration: Number - Animation duration in seconds (default: 0.6)
- * - delay: Number - Delay before animation (default: 0)
- * - once: Boolean - Only animate once (default: true)
- * - className: String - Additional classes
- *
- * @imports
- * - { motion, useInView } (from 'framer-motion')
- * - { useRef } (from 'react')
- *
- * @usedBy
- * - components/landing/Features.jsx
- * - components/landing/HowItWorks.jsx
- * - components/landing/Testimonials.jsx
- */
+import { useRef } from "react";
+import { motion, useInView } from "framer-motion";
+
+const directionVariants = {
+  up: { y: 30, x: 0 },
+  down: { y: -30, x: 0 },
+  left: { x: 30, y: 0 },
+  right: { x: -30, y: 0 },
+};
+
+export const ScrollReveal = ({
+  children,
+  direction = "up",
+  distance = 30,
+  duration = 0.6,
+  delay = 0,
+  once = true,
+  className,
+}) => {
+  const ref = useRef(null);
+  const isInView = useInView(ref, { once, margin: "-50px" });
+
+  const initial = {
+    opacity: 0,
+    ...(direction === "up" && { y: distance }),
+    ...(direction === "down" && { y: -distance }),
+    ...(direction === "left" && { x: distance }),
+    ...(direction === "right" && { x: -distance }),
+  };
+
+  return (
+    <motion.div
+      ref={ref}
+      className={className}
+      initial={initial}
+      animate={isInView ? { opacity: 1, x: 0, y: 0 } : initial}
+      transition={{
+        duration,
+        delay,
+        ease: [0.25, 0.1, 0.25, 1],
+      }}
+    >
+      {children}
+    </motion.div>
+  );
+};

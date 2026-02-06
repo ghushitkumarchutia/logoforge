@@ -1,29 +1,23 @@
-/**
- * @file Loader.jsx
- * @description Loading spinner component
- *
- * @role
- * - Displays animated loading spinner
- * - Used during async operations
- * - Multiple sizes available
- *
- * @exports
- * - Loader: React Component
- *
- * @props
- * - size: 'sm' | 'md' | 'lg' (default: 'md')
- * - color: String - Tailwind color class (default: 'primary-500')
- * - className: String - Additional classes
- *
- * @styling
- * - Animated spinning circle
- * - Uses Tailwind animate-spin
- *
- * @imports
- * - clsx (from 'clsx')
- *
- * @usedBy
- * - components/common/Button.jsx (loading state)
- * - pages/DashboardPage.jsx (loading projects)
- * - contexts/AuthContext.jsx (initial auth check)
- */
+import clsx from "clsx";
+
+const sizeClasses = {
+  sm: "w-4 h-4 border-2",
+  md: "w-6 h-6 border-2",
+  lg: "w-8 h-8 border-3",
+};
+
+export const Loader = ({ size = "md", color = "green-500", className }) => {
+  return (
+    <div
+      className={clsx(
+        "animate-spin rounded-full border-transparent",
+        sizeClasses[size],
+        `border-t-${color}`,
+        className,
+      )}
+      style={{
+        borderTopColor: color.startsWith("#") ? color : undefined,
+      }}
+    />
+  );
+};
