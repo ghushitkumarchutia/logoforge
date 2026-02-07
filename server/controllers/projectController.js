@@ -5,6 +5,22 @@ const {
   paginatedResponse,
 } = require("../utils/responseHelpers");
 
+const findUserProject = async (projectId, userId) => {
+  const project = await Project.findById(projectId);
+
+  if (!project) {
+    return { error: { status: 404, message: "Project not found" } };
+  }
+
+  if (project.userId.toString() !== userId.toString()) {
+    return {
+      error: { status: 403, message: "Not authorized to access this project" },
+    };
+  }
+
+  return { project };
+};
+
 const getProjects = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
@@ -18,7 +34,14 @@ const getProjects = async (req, res) => {
       .skip(skip)
       .limit(limit);
 
-    return paginatedResponse(res, projects, page, limit, total);
+    return paginatedResponse(
+      res,
+      "Projects retrieved successfully",
+      projects,
+      page,
+      limit,
+      total,
+    );
   } catch (error) {
     return errorResponse(res, 500, "Server error fetching projects");
   }
@@ -26,14 +49,13 @@ const getProjects = async (req, res) => {
 
 const getProjectById = async (req, res) => {
   try {
-    const project = await Project.findById(req.params.id);
+    const { project, error } = await findUserProject(
+      req.params.id,
+      req.user._id,
+    );
 
-    if (!project) {
-      return errorResponse(res, 404, "Project not found");
-    }
-
-    if (project.userId.toString() !== req.user._id.toString()) {
-      return errorResponse(res, 403, "Not authorized to access this project");
+    if (error) {
+      return errorResponse(res, error.status, error.message);
     }
 
     return successResponse(res, 200, "Project retrieved successfully", {
@@ -66,14 +88,13 @@ const createProject = async (req, res) => {
 
 const updateProject = async (req, res) => {
   try {
-    const project = await Project.findById(req.params.id);
+    const { project, error } = await findUserProject(
+      req.params.id,
+      req.user._id,
+    );
 
-    if (!project) {
-      return errorResponse(res, 404, "Project not found");
-    }
-
-    if (project.userId.toString() !== req.user._id.toString()) {
-      return errorResponse(res, 403, "Not authorized to update this project");
+    if (error) {
+      return errorResponse(res, error.status, error.message);
     }
 
     const { projectName, canvasData, thumbnail, tags } = req.body;
@@ -95,14 +116,13 @@ const updateProject = async (req, res) => {
 
 const deleteProject = async (req, res) => {
   try {
-    const project = await Project.findById(req.params.id);
+    const { project, error } = await findUserProject(
+      req.params.id,
+      req.user._id,
+    );
 
-    if (!project) {
-      return errorResponse(res, 404, "Project not found");
-    }
-
-    if (project.userId.toString() !== req.user._id.toString()) {
-      return errorResponse(res, 403, "Not authorized to delete this project");
+    if (error) {
+      return errorResponse(res, error.status, error.message);
     }
 
     await project.deleteOne();

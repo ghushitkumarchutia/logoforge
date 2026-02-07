@@ -31,11 +31,7 @@ const registerUser = async (req, res) => {
     });
   } catch (error) {
     console.error(`[Auth] Registration Error: ${error.message}`, error);
-    return errorResponse(
-      res,
-      500,
-      "Server error during registration: " + error.message,
-    );
+    return errorResponse(res, 500, "Server error during registration");
   }
 };
 
@@ -73,7 +69,7 @@ const logoutUser = async (req, res) => {
     httpOnly: true,
     expires: new Date(0),
     secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
+    sameSite: "lax",
   });
 
   return successResponse(res, 200, "Logout successful");

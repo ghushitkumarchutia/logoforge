@@ -9,6 +9,13 @@ const getIcons = async (req, res) => {
     let filter = {};
 
     if (category) {
+      if (!VALID_CATEGORIES.includes(category)) {
+        return errorResponse(
+          res,
+          400,
+          "Invalid category. Must be Business, Social, General, or Technology",
+        );
+      }
       filter.category = category;
     }
 
@@ -31,31 +38,6 @@ const getIcons = async (req, res) => {
   }
 };
 
-const getIconsByCategory = async (req, res) => {
-  try {
-    const { category } = req.params;
-
-    if (!VALID_CATEGORIES.includes(category)) {
-      return errorResponse(
-        res,
-        400,
-        "Invalid category. Must be Business, Social, General, or Technology",
-      );
-    }
-
-    const icons = await Icon.find({ category })
-      .select("name category svgPath viewBox")
-      .sort({ name: 1 });
-
-    return successResponse(res, 200, "Icons retrieved successfully", {
-      icons,
-    });
-  } catch (error) {
-    return errorResponse(res, 500, "Server error fetching icons");
-  }
-};
-
 module.exports = {
   getIcons,
-  getIconsByCategory,
 };
