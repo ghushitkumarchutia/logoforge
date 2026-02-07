@@ -1,26 +1,21 @@
 import api from "./api";
 
-export const getAllProjects = async (page = 1, limit = 10) => {
-  const response = await api.get(`/projects?page=${page}&limit=${limit}`);
-  return response;
+export const getAllProjects = (page = 1, limit = 10) => {
+  return api.get(`/projects?page=${page}&limit=${limit}`);
 };
 
-export const getProjectById = async (id) => {
-  const response = await api.get(`/projects/${id}`);
-  return response;
+export const getProjectById = (id) => {
+  return api.get(`/projects/${id}`);
 };
 
-export const createProject = async (projectData) => {
-  const response = await api.post("/projects", projectData);
-  return response;
+export const createProject = (projectData) => {
+  return api.post("/projects", projectData);
 };
 
-export const updateProject = async (id, updateData) => {
-  const response = await api.put(`/projects/${id}`, updateData);
-  return response;
+export const updateProject = (id, updateData) => {
+  return api.put(`/projects/${id}`, updateData);
 };
 
-export const deleteProject = async (id) => {
-  const response = await api.delete(`/projects/${id}`);
-  return response;
+export const deleteProject = (id) => {
+  return api.delete(`/projects/${id}`);
 };

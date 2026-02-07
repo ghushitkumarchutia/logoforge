@@ -1,21 +1,17 @@
 import api from "./api";
 
-export const registerUser = async (userData) => {
-  const response = await api.post("/auth/register", userData);
-  return response;
+export const registerUser = (userData) => {
+  return api.post("/auth/register", userData);
 };
 
-export const loginUser = async (credentials) => {
-  const response = await api.post("/auth/login", credentials);
-  return response;
+export const loginUser = (credentials) => {
+  return api.post("/auth/login", credentials);
 };
 
-export const logoutUser = async () => {
-  const response = await api.post("/auth/logout");
-  return response;
+export const logoutUser = () => {
+  return api.post("/auth/logout");
 };
 
-export const getCurrentUser = async () => {
-  const response = await api.get("/auth/me");
-  return response;
+export const getCurrentUser = () => {
+  return api.get("/auth/me");
 };
