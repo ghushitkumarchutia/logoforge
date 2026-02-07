@@ -22,7 +22,6 @@ const iconSchema = new mongoose.Schema(
     },
     viewBox: {
       type: String,
-      required: [true, "ViewBox is required"],
       default: "0 0 24 24",
     },
     keywords: {

@@ -13,7 +13,6 @@ const projectSchema = new mongoose.Schema(
       trim: true,
       minlength: [1, "Project name cannot be empty"],
       maxlength: [50, "Project name cannot exceed 50 characters"],
-      default: "Untitled Project",
     },
     canvasData: {
       type: Object,

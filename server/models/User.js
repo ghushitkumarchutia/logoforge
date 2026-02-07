@@ -35,11 +35,16 @@ const userSchema = new mongoose.Schema(
   },
 );
 
-userSchema.pre("save", async function () {
+userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) {
-    return;
+    return next();
   }
-  this.password = await hashPassword(this.password);
+  try {
+    this.password = await hashPassword(this.password);
+    next();
+  } catch (error) {
+    next(error);
+  }
 });
 
 userSchema.methods.matchPassword = async function (enteredPassword) {
