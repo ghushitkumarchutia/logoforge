@@ -101,7 +101,7 @@ export const useCanvas = (canvasRef) => {
   );
 
   const addIcon = useCallback(
-    (svgPath, viewBox = "0 0 24 24") => {
+    (svgPath) => {
       if (!canvas) return;
 
       const path = new Path(svgPath, {
@@ -130,20 +130,19 @@ export const useCanvas = (canvasRef) => {
     }
   }, [canvas]);
 
-  const duplicateSelected = useCallback(() => {
+  const duplicateSelected = useCallback(async () => {
     if (!canvas) return;
     const active = canvas.getActiveObject();
     if (!active) return;
 
-    active.clone((cloned) => {
-      cloned.set({
-        left: active.left + 10,
-        top: active.top + 10,
-      });
-      canvas.add(cloned);
-      canvas.setActiveObject(cloned);
-      canvas.renderAll();
+    const cloned = await active.clone();
+    cloned.set({
+      left: active.left + 10,
+      top: active.top + 10,
     });
+    canvas.add(cloned);
+    canvas.setActiveObject(cloned);
+    canvas.renderAll();
   }, [canvas]);
 
   const setFillColor = useCallback(
@@ -223,18 +222,11 @@ export const useCanvas = (canvasRef) => {
   }, [canvas]);
 
   const loadFromJSON = useCallback(
-    (json) => {
-      return new Promise((resolve) => {
-        if (!canvas) {
-          resolve();
-          return;
-        }
-        canvas.loadFromJSON(json, () => {
-          canvas.renderAll();
-          setObjects(canvas.getObjects());
-          resolve();
-        });
-      });
+    async (json) => {
+      if (!canvas) return;
+      await canvas.loadFromJSON(json);
+      canvas.renderAll();
+      setObjects(canvas.getObjects());
     },
     [canvas],
   );
@@ -242,7 +234,7 @@ export const useCanvas = (canvasRef) => {
   const clearCanvas = useCallback(() => {
     if (!canvas) return;
     canvas.clear();
-    canvas.backgroundColor = CANVAS_DEFAULTS.backgroundColor;
+    canvas.set("backgroundColor", CANVAS_DEFAULTS.backgroundColor);
     canvas.renderAll();
     setObjects([]);
   }, [canvas]);
