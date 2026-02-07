@@ -83,15 +83,12 @@ export const getObjectBounds = (object) => {
 };
 
 export const cloneObject = async (object) => {
-  return new Promise((resolve) => {
-    object.clone((cloned) => {
-      cloned.set({
-        left: object.left + 20,
-        top: object.top + 20,
-      });
-      resolve(cloned);
-    });
+  const cloned = await object.clone();
+  cloned.set({
+    left: object.left + 20,
+    top: object.top + 20,
   });
+  return cloned;
 };
 
 export const generateThumbnail = (canvas, width = 200) => {

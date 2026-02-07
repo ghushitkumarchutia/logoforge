@@ -9,10 +9,15 @@ export const exportToPNG = (canvas, options = {}) => {
     quality: 1,
   });
 
-  const link = document.createElement("a");
-  link.href = dataURL;
-  link.download = options.filename || generateFilename("design", "png");
-  link.click();
+  const byteString = atob(dataURL.split(",")[1]);
+  const mimeType = dataURL.split(",")[0].split(":")[1].split(";")[0];
+  const ab = new ArrayBuffer(byteString.length);
+  const ia = new Uint8Array(ab);
+  for (let i = 0; i < byteString.length; i++) {
+    ia[i] = byteString.charCodeAt(i);
+  }
+  const blob = new Blob([ab], { type: mimeType });
+  saveAs(blob, options.filename || generateFilename("design", "png"));
 };
 
 export const exportToSVG = (canvas, filename) => {
