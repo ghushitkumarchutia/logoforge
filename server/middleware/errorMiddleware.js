@@ -7,8 +7,26 @@ const notFound = (req, res, next) => {
 };
 
 const errorHandler = (err, req, res, next) => {
-  const statusCode = res.statusCode === 200 ? 500 : res.statusCode;
-  const message = err.message || "Internal Server Error";
+  let statusCode = res.statusCode === 200 ? 500 : res.statusCode;
+  let message = err.message || "Internal Server Error";
+
+  if (err.name === "ValidationError") {
+    statusCode = 400;
+    message = Object.values(err.errors)
+      .map((e) => e.message)
+      .join(", ");
+  }
+
+  if (err.name === "CastError" && err.kind === "ObjectId") {
+    statusCode = 400;
+    message = "Invalid resource ID format";
+  }
+
+  if (err.code === 11000) {
+    statusCode = 409;
+    const field = Object.keys(err.keyValue)[0];
+    message = `${field.charAt(0).toUpperCase() + field.slice(1)} already exists`;
+  }
 
   const response = {
     success: false,
