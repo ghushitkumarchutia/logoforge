@@ -24,9 +24,10 @@ const errorResponse = (res, statusCode, message, errors = null) => {
   return res.status(statusCode).json(response);
 };
 
-const paginatedResponse = (res, data, page, limit, total) => {
+const paginatedResponse = (res, message, data, page, limit, total) => {
   return res.status(200).json({
     success: true,
+    message,
     data,
     pagination: {
       currentPage: page,

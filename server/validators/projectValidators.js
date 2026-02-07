@@ -1,5 +1,20 @@
 const { body, param } = require("express-validator");
 
+// Shared custom validators to avoid duplication
+const validateCanvasData = (value) => {
+  if (!value.objects || !Array.isArray(value.objects)) {
+    throw new Error("Canvas data must contain an objects array");
+  }
+  return true;
+};
+
+const validateTags = (value) => {
+  if (value && !value.every((tag) => typeof tag === "string")) {
+    throw new Error("Each tag must be a string");
+  }
+  return true;
+};
+
 const createProjectValidation = [
   body("projectName")
     .trim()
@@ -13,12 +28,7 @@ const createProjectValidation = [
     .withMessage("Canvas data is required")
     .isObject()
     .withMessage("Canvas data must be an object")
-    .custom((value) => {
-      if (!value.objects || !Array.isArray(value.objects)) {
-        throw new Error("Canvas data must contain an objects array");
-      }
-      return true;
-    }),
+    .custom(validateCanvasData),
 
   body("thumbnail")
     .optional()
@@ -29,12 +39,7 @@ const createProjectValidation = [
     .optional()
     .isArray()
     .withMessage("Tags must be an array")
-    .custom((value) => {
-      if (value && !value.every((tag) => typeof tag === "string")) {
-        throw new Error("Each tag must be a string");
-      }
-      return true;
-    }),
+    .custom(validateTags),
 ];
 
 const updateProjectValidation = [
@@ -48,12 +53,7 @@ const updateProjectValidation = [
     .optional()
     .isObject()
     .withMessage("Canvas data must be an object")
-    .custom((value) => {
-      if (value && (!value.objects || !Array.isArray(value.objects))) {
-        throw new Error("Canvas data must contain an objects array");
-      }
-      return true;
-    }),
+    .custom(validateCanvasData),
 
   body("thumbnail")
     .optional()
@@ -64,18 +64,11 @@ const updateProjectValidation = [
     .optional()
     .isArray()
     .withMessage("Tags must be an array")
-    .custom((value) => {
-      if (value && !value.every((tag) => typeof tag === "string")) {
-        throw new Error("Each tag must be a string");
-      }
-      return true;
-    }),
+    .custom(validateTags),
 ];
 
 const projectIdValidation = [
   param("id")
-    .notEmpty()
-    .withMessage("Project ID is required")
     .isMongoId()
     .withMessage("Invalid project ID format"),
 ];
