@@ -30,7 +30,12 @@ const registerUser = async (req, res) => {
       createdAt: user.createdAt,
     });
   } catch (error) {
-    return errorResponse(res, 500, "Server error during registration");
+    console.error(`[Auth] Registration Error: ${error.message}`, error);
+    return errorResponse(
+      res,
+      500,
+      "Server error during registration: " + error.message,
+    );
   }
 };
 

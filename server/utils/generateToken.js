@@ -3,7 +3,6 @@ const jwt = require("jsonwebtoken");
 const DEFAULT_EXPIRE = "7d";
 const MS_PER_DAY = 24 * 60 * 60 * 1000;
 
-// Parse duration string (e.g. "7d", "14d") to milliseconds
 const parseDurationToMs = (duration) => {
   const match = duration.match(/^(\d+)([dhms])$/);
   if (!match) return 7 * MS_PER_DAY;

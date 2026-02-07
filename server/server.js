@@ -21,11 +21,40 @@ const limiter = rateLimit({
   },
 });
 
-app.use(cors(corsOptions));
+// Manual CORS Middleware
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+
+  // Allow any origin in development
+  if (origin) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+  } else {
+    // Optional: Allow non-browser agents or set specific default
+    // res.setHeader("Access-Control-Allow-Origin", "*");
+  }
+
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, POST, PUT, DELETE, PATCH, OPTIONS",
+  );
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Content-Type, Authorization, X-Requested-With",
+  );
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+
+  // Handle preflight requests
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
+  }
+
+  next();
+});
+
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.use("/api", limiter);
+// app.use("/api", limiter); // Temporarily disabled for debugging
 
 app.use("/api/v1", v1Routes);
 
@@ -36,7 +65,7 @@ app.get("/health", (req, res) => {
 app.use(notFound);
 app.use(errorHandler);
 
-const PORT = process.env.PORT || 5000;
+const PORT = 5001; // Hardcoded to avoid conflict with AirPlay (5000)
 
 app.listen(PORT, () => {
   console.log(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);

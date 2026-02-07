@@ -1,5 +1,5 @@
 export const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:5000/api/v1";
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:5001/api/v1";
 export const APP_NAME = import.meta.env.VITE_APP_NAME || "LogoForge";
 
 export const CANVAS_DEFAULTS = {

@@ -17,8 +17,8 @@ export const AuthProvider = ({ children }) => {
   const checkAuth = useCallback(async () => {
     try {
       const response = await getCurrentUser();
-      if (response.success && response.data?.user) {
-        setUser(response.data.user);
+      if (response.success && response.data) {
+        setUser(response.data);
       }
     } catch {
       setUser(null);
@@ -33,8 +33,8 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     const response = await loginUser({ email, password });
-    if (response.success && response.data?.user) {
-      setUser(response.data.user);
+    if (response.success && response.data) {
+      setUser(response.data);
       navigate("/dashboard");
     }
     return response;
@@ -42,8 +42,8 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (username, email, password) => {
     const response = await registerUser({ username, email, password });
-    if (response.success && response.data?.user) {
-      setUser(response.data.user);
+    if (response.success && response.data) {
+      setUser(response.data);
       navigate("/dashboard");
     }
     return response;

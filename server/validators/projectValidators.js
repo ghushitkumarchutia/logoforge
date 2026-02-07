@@ -1,6 +1,5 @@
 const { body, param } = require("express-validator");
 
-// Shared custom validators to avoid duplication
 const validateCanvasData = (value) => {
   if (!value.objects || !Array.isArray(value.objects)) {
     throw new Error("Canvas data must contain an objects array");
@@ -68,9 +67,7 @@ const updateProjectValidation = [
 ];
 
 const projectIdValidation = [
-  param("id")
-    .isMongoId()
-    .withMessage("Invalid project ID format"),
+  param("id").isMongoId().withMessage("Invalid project ID format"),
 ];
 
 module.exports = {

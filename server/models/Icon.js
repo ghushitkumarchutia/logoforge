@@ -36,7 +36,7 @@ const iconSchema = new mongoose.Schema(
 );
 
 iconSchema.index({ category: 1 });
-iconSchema.index({ name: 1 }, { unique: true });
+
 iconSchema.index({ keywords: "text", name: "text" });
 
 const Icon = mongoose.model("Icon", iconSchema);

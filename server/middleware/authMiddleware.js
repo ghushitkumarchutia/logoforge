@@ -3,6 +3,7 @@ const User = require("../models/User");
 const { errorResponse } = require("../utils/responseHelpers");
 
 const protect = async (req, res, next) => {
+  /* console.log("[Auth] Checking token..."); */
   const token = req.cookies.token;
 
   if (!token) {
