@@ -7,6 +7,8 @@ import { AuthRedirect } from "./components/auth/AuthRedirect.jsx";
 import { LandingPage } from "./pages/LandingPage.jsx";
 import { LoginPage } from "./pages/LoginPage.jsx";
 import { RegisterPage } from "./pages/RegisterPage.jsx";
+import { ForgotPasswordPage } from "./pages/ForgotPasswordPage.jsx";
+import { ResetPasswordPage } from "./pages/ResetPasswordPage.jsx";
 import { DashboardPage } from "./pages/DashboardPage.jsx";
 import { EditorPage } from "./pages/EditorPage.jsx";
 import { ProfilePage } from "./pages/ProfilePage.jsx";
@@ -37,6 +39,20 @@ const App = () => {
                     <RegisterPage />
                   </AuthRedirect>
                 }
+              />
+
+              <Route
+                path='/forgot-password'
+                element={
+                  <AuthRedirect>
+                    <ForgotPasswordPage />
+                  </AuthRedirect>
+                }
+              />
+
+              <Route
+                path='/reset-password/:token'
+                element={<ResetPasswordPage />}
               />
 
               <Route

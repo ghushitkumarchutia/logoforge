@@ -1,11 +1,16 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useAuth } from "../hooks/useAuth.js";
-import { getAllProjects, deleteProject } from "../services/projectService.js";
+import {
+  getAllProjects,
+  deleteProject,
+  duplicateProject,
+} from "../services/projectService.js";
 import { Navbar } from "../components/layout/Navbar.jsx";
 import { PageContainer } from "../components/layout/PageContainer.jsx";
 import { ProjectGrid } from "../components/dashboard/ProjectGrid.jsx";
 import { ProjectSearch } from "../components/dashboard/ProjectSearch.jsx";
 import { CreateProjectBtn } from "../components/dashboard/CreateProjectBtn.jsx";
+import { DashboardStats } from "../components/dashboard/DashboardStats.jsx";
 import toast from "react-hot-toast";
 
 export const DashboardPage = () => {
@@ -40,6 +45,19 @@ export const DashboardPage = () => {
     }
   }, []);
 
+  const handleDuplicate = useCallback(async (projectId) => {
+    try {
+      const response = await duplicateProject(projectId);
+      const newProject = response.data?.project;
+      if (newProject) {
+        setProjects((prev) => [newProject, ...prev]);
+      }
+      toast.success("Project duplicated successfully");
+    } catch {
+      toast.error("Failed to duplicate project");
+    }
+  }, []);
+
   const handleSearchChange = useCallback((e) => {
     setSearchQuery(e.target.value);
   }, []);
@@ -49,8 +67,8 @@ export const DashboardPage = () => {
     const query = searchQuery.toLowerCase();
     return projects.filter(
       (project) =>
-        project.name?.toLowerCase().includes(query) ||
-        project.title?.toLowerCase().includes(query),
+        project.projectName?.toLowerCase().includes(query) ||
+        project.tags?.some((tag) => tag.toLowerCase().includes(query)),
     );
   }, [projects, searchQuery]);
 
@@ -69,6 +87,8 @@ export const DashboardPage = () => {
             </p>
           </div>
 
+          <DashboardStats />
+
           <div className='flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-8'>
             <ProjectSearch value={searchQuery} onChange={handleSearchChange} />
             <CreateProjectBtn />
@@ -78,6 +98,7 @@ export const DashboardPage = () => {
             projects={filteredProjects}
             isLoading={isLoading}
             onDelete={handleDelete}
+            onDuplicate={handleDuplicate}
           />
         </PageContainer>
       </main>

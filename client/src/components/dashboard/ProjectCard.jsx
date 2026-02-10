@@ -2,18 +2,27 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Card } from "../common/Card";
 import { ConfirmDialog } from "../common/ConfirmDialog";
+import { Tooltip } from "../common/Tooltip";
 import { formatRelativeTime } from "../../utils/formatters";
-import { Edit, Trash2 } from "lucide-react";
+import { Edit, Trash2, Copy } from "lucide-react";
 
-export const ProjectCard = ({ project, onDelete }) => {
+export const ProjectCard = ({ project, onDelete, onDuplicate }) => {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isDuplicating, setIsDuplicating] = useState(false);
 
   const handleDelete = async () => {
     setIsDeleting(true);
     await onDelete(project._id || project.id);
     setIsDeleting(false);
     setShowDeleteDialog(false);
+  };
+
+  const handleDuplicate = async () => {
+    if (!onDuplicate) return;
+    setIsDuplicating(true);
+    await onDuplicate(project._id || project.id);
+    setIsDuplicating(false);
   };
 
   return (
@@ -53,6 +62,17 @@ export const ProjectCard = ({ project, onDelete }) => {
               >
                 <Edit size={16} />
               </Link>
+              {onDuplicate && (
+                <Tooltip content='Duplicate' position='bottom'>
+                  <button
+                    onClick={handleDuplicate}
+                    disabled={isDuplicating}
+                    className='p-2 text-gray-500 hover:text-blue-500 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors disabled:opacity-50'
+                  >
+                    <Copy size={16} />
+                  </button>
+                </Tooltip>
+              )}
               <button
                 onClick={() => setShowDeleteDialog(true)}
                 className='p-2 text-gray-500 hover:text-red-500 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors'

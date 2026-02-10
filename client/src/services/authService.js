@@ -15,3 +15,11 @@ export const logoutUser = () => {
 export const getCurrentUser = () => {
   return api.get("/auth/me");
 };
+
+export const forgotPassword = (email) => {
+  return api.post("/auth/forgot-password", { email });
+};
+
+export const resetPassword = (token, password) => {
+  return api.put(`/auth/reset-password/${token}`, { password });
+};

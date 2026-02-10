@@ -19,3 +19,13 @@ export const updateProject = (id, updateData) => {
 export const deleteProject = (id) => {
   return api.delete(`/projects/${id}`);
 };
+
+export const duplicateProject = (id) => {
+  return api.post(`/projects/${id}/duplicate`);
+};
+
+export const searchProjects = (query, page = 1, limit = 10) => {
+  return api.get(
+    `/projects/search?q=${encodeURIComponent(query)}&page=${page}&limit=${limit}`,
+  );
+};
