@@ -20,10 +20,7 @@ const getIcons = async (req, res) => {
     }
 
     if (search) {
-      filter.$or = [
-        { name: { $regex: search, $options: "i" } },
-        { keywords: { $regex: search, $options: "i" } },
-      ];
+      filter.$text = { $search: search };
     }
 
     const icons = await Icon.find(filter)

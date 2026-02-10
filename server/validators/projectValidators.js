@@ -1,6 +1,9 @@
 const { body, param } = require("express-validator");
 
 const validateCanvasData = (value) => {
+  if (typeof value !== "object" || value === null) {
+    throw new Error("Canvas data must be a valid object");
+  }
   if (!value.objects || !Array.isArray(value.objects)) {
     throw new Error("Canvas data must contain an objects array");
   }
@@ -66,12 +69,12 @@ const updateProjectValidation = [
     .custom(validateTags),
 ];
 
-const projectIdValidation = [
-  param("id").isMongoId().withMessage("Invalid project ID format"),
+const mongoIdValidation = [
+  param("id").isMongoId().withMessage("Invalid resource ID format"),
 ];
 
 module.exports = {
   createProjectValidation,
   updateProjectValidation,
-  projectIdValidation,
+  mongoIdValidation,
 };

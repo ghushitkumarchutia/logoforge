@@ -10,7 +10,7 @@ const {
 const {
   createProjectValidation,
   updateProjectValidation,
-  projectIdValidation,
+  mongoIdValidation,
 } = require("../../validators/projectValidators");
 const { validate } = require("../../middleware/validateMiddleware");
 const { protect } = require("../../middleware/authMiddleware");
@@ -18,15 +18,15 @@ const { protect } = require("../../middleware/authMiddleware");
 router.use(protect);
 
 router.get("/", getProjects);
-router.get("/:id", projectIdValidation, validate, getProjectById);
+router.get("/:id", mongoIdValidation, validate, getProjectById);
 router.post("/", createProjectValidation, validate, createProject);
 router.put(
   "/:id",
-  projectIdValidation,
+  mongoIdValidation,
   updateProjectValidation,
   validate,
   updateProject,
 );
-router.delete("/:id", projectIdValidation, validate, deleteProject);
+router.delete("/:id", mongoIdValidation, validate, deleteProject);
 
 module.exports = router;

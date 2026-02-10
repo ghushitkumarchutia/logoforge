@@ -1,4 +1,5 @@
-require("dotenv").config();
+const path = require("path");
+require("dotenv").config({ path: path.join(__dirname, "../.env") });
 const mongoose = require("mongoose");
 const Template = require("../models/Template");
 
@@ -99,7 +100,7 @@ const templateData = [
           top: 0,
           width: 1200,
           height: 630,
-          fill: "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
+          fill: "#667eea",
         },
         {
           type: "text",

@@ -1,5 +1,6 @@
 const User = require("../models/User");
 const generateToken = require("../utils/generateToken");
+const { getCookieOptions } = require("../utils/generateToken");
 const { successResponse, errorResponse } = require("../utils/responseHelpers");
 
 const registerUser = async (req, res) => {
@@ -65,23 +66,29 @@ const loginUser = async (req, res) => {
 };
 
 const logoutUser = async (req, res) => {
-  res.cookie("token", "", {
-    httpOnly: true,
-    expires: new Date(0),
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-  });
+  try {
+    res.cookie("token", "", {
+      ...getCookieOptions(0),
+      expires: new Date(0),
+    });
 
-  return successResponse(res, 200, "Logout successful");
+    return successResponse(res, 200, "Logout successful");
+  } catch (error) {
+    return errorResponse(res, 500, "Server error during logout");
+  }
 };
 
 const getMe = async (req, res) => {
-  return successResponse(res, 200, "User profile retrieved", {
-    id: req.user._id,
-    username: req.user.username,
-    email: req.user.email,
-    createdAt: req.user.createdAt,
-  });
+  try {
+    return successResponse(res, 200, "User profile retrieved", {
+      id: req.user._id,
+      username: req.user.username,
+      email: req.user.email,
+      createdAt: req.user.createdAt,
+    });
+  } catch (error) {
+    return errorResponse(res, 500, "Server error fetching profile");
+  }
 };
 
 module.exports = {

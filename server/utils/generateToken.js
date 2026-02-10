@@ -14,6 +14,15 @@ const parseDurationToMs = (duration) => {
   return value * (multipliers[unit] || MS_PER_DAY);
 };
 
+const getCookieOptions = (maxAge) => ({
+  httpOnly: true,
+  secure:
+    process.env.COOKIE_SECURE === "true" ||
+    process.env.NODE_ENV === "production",
+  sameSite: process.env.COOKIE_SAME_SITE || "lax",
+  maxAge,
+});
+
 const generateToken = (res, userId) => {
   if (!process.env.JWT_SECRET) {
     throw new Error("JWT_SECRET is not defined in environment variables");
@@ -25,14 +34,10 @@ const generateToken = (res, userId) => {
     expiresIn,
   });
 
-  res.cookie("token", token, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "lax",
-    maxAge: parseDurationToMs(expiresIn),
-  });
+  res.cookie("token", token, getCookieOptions(parseDurationToMs(expiresIn)));
 
   return token;
 };
 
 module.exports = generateToken;
+module.exports.getCookieOptions = getCookieOptions;
