@@ -1,4 +1,5 @@
 require("dotenv").config();
+const path = require("path");
 const express = require("express");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
@@ -22,7 +23,16 @@ const limiter = rateLimit({
   },
 });
 
-app.use(helmet());
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 20,
+  message: {
+    success: false,
+    message: "Too many auth attempts, please try again later",
+  },
+});
+
+app.use(helmet({ crossOriginResourcePolicy: { policy: "cross-origin" } }));
 app.use(cors(corsOptions));
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
@@ -32,6 +42,9 @@ if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
 }
 
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
+
+app.use("/api/v1/auth", authLimiter);
 app.use("/api", limiter);
 
 app.use("/api/v1", v1Routes);

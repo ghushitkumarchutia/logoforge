@@ -6,6 +6,8 @@ const {
   createProject,
   updateProject,
   deleteProject,
+  duplicateProject,
+  searchProjects,
 } = require("../../controllers/projectController");
 const {
   createProjectValidation,
@@ -17,6 +19,7 @@ const { protect } = require("../../middleware/authMiddleware");
 
 router.use(protect);
 
+router.get("/search", searchProjects);
 router.get("/", getProjects);
 router.get("/:id", mongoIdValidation, validate, getProjectById);
 router.post("/", createProjectValidation, validate, createProject);
@@ -28,5 +31,6 @@ router.put(
   updateProject,
 );
 router.delete("/:id", mongoIdValidation, validate, deleteProject);
+router.post("/:id/duplicate", mongoIdValidation, validate, duplicateProject);
 
 module.exports = router;

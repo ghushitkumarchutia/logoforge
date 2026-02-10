@@ -98,3 +98,8 @@ mongodb-data/
 # =========================
 uploads/
 !uploads/.gitkeep
+
+DEVELOPMENT_PLAN.md
+DEVELOPMENT_ROADMAP.md
+fff.md
+PROJECT_STRUCTURE.md

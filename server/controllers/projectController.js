@@ -133,10 +133,80 @@ const deleteProject = async (req, res) => {
   }
 };
 
+const duplicateProject = async (req, res) => {
+  try {
+    const { project, error } = await findUserProject(
+      req.params.id,
+      req.user._id,
+    );
+
+    if (error) {
+      return errorResponse(res, error.status, error.message);
+    }
+
+    const duplicate = await Project.create({
+      userId: req.user._id,
+      projectName: `${project.projectName} (Copy)`,
+      canvasData: project.canvasData,
+      thumbnail: project.thumbnail,
+      tags: [...project.tags],
+    });
+
+    return successResponse(res, 201, "Project duplicated successfully", {
+      project: duplicate,
+    });
+  } catch (error) {
+    return errorResponse(res, 500, "Server error duplicating project");
+  }
+};
+
+const searchProjects = async (req, res) => {
+  try {
+    const { q } = req.query;
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 10;
+    const skip = (page - 1) * limit;
+
+    if (!q || !q.trim()) {
+      return errorResponse(res, 400, "Search query is required");
+    }
+
+    const searchRegex = new RegExp(
+      q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"),
+      "i",
+    );
+
+    const filter = {
+      userId: req.user._id,
+      $or: [{ projectName: searchRegex }, { tags: searchRegex }],
+    };
+
+    const total = await Project.countDocuments(filter);
+    const projects = await Project.find(filter)
+      .select("projectName thumbnail tags createdAt updatedAt")
+      .sort({ updatedAt: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    return paginatedResponse(
+      res,
+      "Search results retrieved",
+      projects,
+      page,
+      limit,
+      total,
+    );
+  } catch (error) {
+    return errorResponse(res, 500, "Server error searching projects");
+  }
+};
+
 module.exports = {
   getProjects,
   getProjectById,
   createProject,
   updateProject,
   deleteProject,
+  duplicateProject,
+  searchProjects,
 };
