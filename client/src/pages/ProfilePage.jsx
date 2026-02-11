@@ -163,7 +163,7 @@ export const ProfilePage = () => {
           <div className='grid gap-6 lg:grid-cols-2'>
             <Card padding='lg'>
               <div className='flex items-center gap-4 mb-6'>
-                <div className='w-16 h-16 bg-gradient-to-br from-green-500 to-purple-500 rounded-full flex items-center justify-center'>
+                <div className='w-16 h-16 bg-linear-to-br from-green-500 to-purple-500 rounded-full flex items-center justify-center'>
                   <span className='text-white font-bold text-2xl'>
                     {user?.username?.charAt(0)?.toUpperCase() || "U"}
                   </span>

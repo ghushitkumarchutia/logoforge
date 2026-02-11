@@ -30,7 +30,16 @@ api.interceptors.response.use(
     if (error.response) {
       const { status, data } = error.response;
 
-      if (status === 401 && window.location.pathname !== "/login") {
+      const pathname = window.location.pathname;
+      const publicPaths = [
+        "/login",
+        "/register",
+        "/forgot-password",
+        "/reset-password",
+      ];
+      const isPublicPath = publicPaths.some((p) => pathname.startsWith(p));
+
+      if (status === 401 && !isPublicPath) {
         window.location.href = "/login";
       }
 

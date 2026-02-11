@@ -13,7 +13,7 @@ export const ToastProvider = ({ children }) => {
         toastOptions={{
           duration: 3000,
           style: {
-            background: isDark ? "#1f2937" : "#ffffff",
+            background: isDark ? "#1a1a1a" : "#ffffff",
             color: isDark ? "#f9fafb" : "#111827",
             border: isDark ? "1px solid #374151" : "1px solid #e5e7eb",
           },

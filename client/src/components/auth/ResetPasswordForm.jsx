@@ -1,35 +1,27 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { Input } from "../common/Input";
-import { Button } from "../common/Button";
 import {
   validatePassword,
   validatePasswordMatch,
 } from "../../utils/validators";
 import { resetPassword } from "../../services/authService";
 import toast from "react-hot-toast";
-import { Lock, ArrowLeft } from "lucide-react";
+import { Lock, ArrowLeft, Eye, EyeOff } from "lucide-react";
 
 export const ResetPasswordForm = ({ token }) => {
   const navigate = useNavigate();
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
   const [isLoading, setIsLoading] = useState(false);
 
   const validateForm = () => {
     const newErrors = {};
-
-    const passwordValidation = validatePassword(password);
-    if (!passwordValidation.isValid) {
-      newErrors.password = passwordValidation.message;
-    }
-
-    const matchValidation = validatePasswordMatch(password, confirmPassword);
-    if (!matchValidation.isValid) {
-      newErrors.confirmPassword = matchValidation.message;
-    }
-
+    const pv = validatePassword(password);
+    if (!pv.isValid) newErrors.password = pv.message;
+    const mv = validatePasswordMatch(password, confirmPassword);
+    if (!mv.isValid) newErrors.confirmPassword = mv.message;
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -41,7 +33,7 @@ export const ResetPasswordForm = ({ token }) => {
     setIsLoading(true);
     try {
       await resetPassword(token, password);
-      toast.success("Password reset successful! You are now logged in.");
+      toast.success("Password reset successful!");
       navigate("/dashboard");
     } catch (error) {
       toast.error(error.message || "Failed to reset password");
@@ -51,41 +43,86 @@ export const ResetPasswordForm = ({ token }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className='space-y-5'>
-      <p className='text-gray-400 text-sm text-center'>
+    <form onSubmit={handleSubmit} className='space-y-4'>
+      <p className='text-neutral-500 dark:text-neutral-400 text-[13px] text-center'>
         Enter your new password below.
       </p>
 
-      <Input
-        label='New Password'
-        name='password'
-        type='password'
-        placeholder='Enter new password'
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        error={errors.password}
-        leftIcon={<Lock size={18} />}
-      />
+      <div>
+        <label
+          htmlFor='password'
+          className='block text-[13px] font-medium text-neutral-700 dark:text-neutral-300 mb-1.5'
+        >
+          New Password
+        </label>
+        <div className='relative'>
+          <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-neutral-400'>
+            <Lock size={16} />
+          </div>
+          <input
+            id='password'
+            name='password'
+            type={showPassword ? "text" : "password"}
+            placeholder='Enter new password'
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className='w-full pl-10 pr-10 py-2.5 rounded-[10px] border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 text-sm placeholder:text-neutral-400 dark:placeholder:text-neutral-500 focus:outline-none focus:ring-1 focus:ring-neutral-900 dark:focus:ring-neutral-500 focus:border-transparent transition-colors'
+          />
+          <button
+            type='button'
+            onClick={() => setShowPassword(!showPassword)}
+            className='absolute inset-y-0 right-0 pr-3 flex items-center text-neutral-400 hover:text-neutral-600 dark:hover:text-neutral-300'
+          >
+            {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+          </button>
+        </div>
+        {errors.password && (
+          <p className='mt-1 text-xs text-red-500'>{errors.password}</p>
+        )}
+      </div>
 
-      <Input
-        label='Confirm Password'
-        name='confirmPassword'
-        type='password'
-        placeholder='Confirm new password'
-        value={confirmPassword}
-        onChange={(e) => setConfirmPassword(e.target.value)}
-        error={errors.confirmPassword}
-        leftIcon={<Lock size={18} />}
-      />
+      <div>
+        <label
+          htmlFor='confirmPassword'
+          className='block text-[13px] font-medium text-neutral-700 dark:text-neutral-300 mb-1.5'
+        >
+          Confirm Password
+        </label>
+        <div className='relative'>
+          <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-neutral-400'>
+            <Lock size={16} />
+          </div>
+          <input
+            id='confirmPassword'
+            name='confirmPassword'
+            type={showPassword ? "text" : "password"}
+            placeholder='Confirm new password'
+            value={confirmPassword}
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            className='w-full pl-10 pr-10 py-2.5 rounded-[10px] border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 text-sm placeholder:text-neutral-400 dark:placeholder:text-neutral-500 focus:outline-none focus:ring-1 focus:ring-neutral-900 dark:focus:ring-neutral-500 focus:border-transparent transition-colors'
+          />
+        </div>
+        {errors.confirmPassword && (
+          <p className='mt-1 text-xs text-red-500'>{errors.confirmPassword}</p>
+        )}
+      </div>
 
-      <Button type='submit' fullWidth isLoading={isLoading}>
-        Reset Password
-      </Button>
+      <button
+        type='submit'
+        disabled={isLoading}
+        className='w-full py-2.5 px-4 bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 text-sm font-medium rounded-[10px] hover:bg-neutral-800 dark:hover:bg-neutral-200 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer'
+      >
+        {isLoading ? (
+          <div className='w-4 h-4 border-2 border-neutral-400 border-t-white dark:border-neutral-500 dark:border-t-neutral-900 rounded-full animate-spin mx-auto' />
+        ) : (
+          "Reset Password"
+        )}
+      </button>
 
-      <p className='text-center text-gray-400 text-sm'>
+      <p className='text-center'>
         <Link
           to='/login'
-          className='inline-flex items-center gap-1 text-green-500 hover:text-green-400 font-medium'
+          className='inline-flex items-center gap-1 text-neutral-900 dark:text-white hover:underline text-sm font-medium'
         >
           <ArrowLeft size={14} />
           Back to Sign In

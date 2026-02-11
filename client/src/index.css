@@ -2,6 +2,8 @@
 
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @import "./styles/canvas.css";
 @import "./styles/layers.css";
 @import "./styles/properties.css";

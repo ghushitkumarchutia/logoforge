@@ -1,7 +1,5 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Input } from "../common/Input";
-import { Button } from "../common/Button";
 import { validateEmail } from "../../utils/validators";
 import { forgotPassword } from "../../services/authService";
 import toast from "react-hot-toast";
@@ -15,10 +13,8 @@ export const ForgotPasswordForm = () => {
 
   const validateForm = () => {
     const newErrors = {};
-    const emailValidation = validateEmail(email);
-    if (!emailValidation.isValid) {
-      newErrors.email = emailValidation.message;
-    }
+    const v = validateEmail(email);
+    if (!v.isValid) newErrors.email = v.message;
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -41,23 +37,30 @@ export const ForgotPasswordForm = () => {
 
   if (isSent) {
     return (
-      <div className='text-center space-y-4'>
-        <div className='w-16 h-16 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mx-auto'>
-          <CheckCircle size={32} className='text-green-500' />
+      <div className='text-center space-y-4 py-2'>
+        <div className='w-12 h-12 bg-neutral-100 dark:bg-neutral-800 rounded-full flex items-center justify-center mx-auto'>
+          <CheckCircle size={24} className='text-neutral-900 dark:text-white' />
         </div>
-        <h3 className='text-lg font-semibold text-white'>Check Your Email</h3>
-        <p className='text-gray-400 text-sm'>
-          If an account with <span className='text-green-400'>{email}</span>{" "}
-          exists, we've sent a password reset link.
-        </p>
-        <p className='text-gray-500 text-xs'>
-          The link will expire in 30 minutes.
+        <div>
+          <h3 className='text-base font-semibold text-neutral-900 dark:text-white mb-1'>
+            Check your email
+          </h3>
+          <p className='text-neutral-500 dark:text-neutral-400 text-[13px]'>
+            If an account with{" "}
+            <span className='text-neutral-900 dark:text-white font-medium'>
+              {email}
+            </span>{" "}
+            exists, we&apos;ve sent a password reset link.
+          </p>
+        </div>
+        <p className='text-neutral-400 text-[11px]'>
+          The link expires in 30 minutes.
         </p>
         <Link
           to='/login'
-          className='inline-flex items-center gap-2 text-green-500 hover:text-green-400 text-sm font-medium'
+          className='inline-flex items-center gap-1.5 text-neutral-900 dark:text-white hover:underline text-sm font-medium'
         >
-          <ArrowLeft size={16} />
+          <ArrowLeft size={14} />
           Back to Sign In
         </Link>
       </div>
@@ -65,32 +68,54 @@ export const ForgotPasswordForm = () => {
   }
 
   return (
-    <form onSubmit={handleSubmit} className='space-y-5'>
-      <p className='text-gray-400 text-sm text-center'>
-        Enter your email address and we'll send you a link to reset your
-        password.
+    <form onSubmit={handleSubmit} className='space-y-4'>
+      <p className='text-neutral-500 dark:text-neutral-400 text-[13px] text-center'>
+        Enter your email and we&apos;ll send you a reset link.
       </p>
 
-      <Input
-        label='Email'
-        name='email'
-        type='email'
-        placeholder='Enter your email'
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        error={errors.email}
-        leftIcon={<Mail size={18} />}
-      />
+      <div>
+        <label
+          htmlFor='email'
+          className='block text-[13px] font-medium text-neutral-700 dark:text-neutral-300 mb-1.5'
+        >
+          Email
+        </label>
+        <div className='relative'>
+          <div className='absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-neutral-400'>
+            <Mail size={16} />
+          </div>
+          <input
+            id='email'
+            name='email'
+            type='email'
+            placeholder='you@example.com'
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className='w-full pl-10 pr-4 py-2.5 rounded-lg border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 text-neutral-900 dark:text-neutral-100 text-sm placeholder:text-neutral-400 dark:placeholder:text-neutral-500 focus:outline-none focus:ring-1 focus:ring-neutral-900 dark:focus:ring-neutral-500 focus:border-transparent transition-colors'
+          />
+        </div>
+        {errors.email && (
+          <p className='mt-1 text-xs text-red-500'>{errors.email}</p>
+        )}
+      </div>
 
-      <Button type='submit' fullWidth isLoading={isLoading}>
-        Send Reset Link
-      </Button>
+      <button
+        type='submit'
+        disabled={isLoading}
+        className='w-full py-2.5 px-4 bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 text-sm font-medium rounded-[10px] hover:bg-neutral-800 dark:hover:bg-neutral-200 focus:outline-none disabled:opacity-50 disabled:cursor-not-allowed transition-colors cursor-pointer'
+      >
+        {isLoading ? (
+          <div className='w-4 h-4 border-2 border-neutral-400 border-t-white dark:border-neutral-500 dark:border-t-neutral-900 rounded-full animate-spin mx-auto' />
+        ) : (
+          "Send Reset Link"
+        )}
+      </button>
 
-      <p className='text-center text-gray-400 text-sm'>
+      <p className='text-center text-neutral-500 dark:text-neutral-400 text-xs'>
         Remember your password?{" "}
         <Link
           to='/login'
-          className='text-green-500 hover:text-green-400 font-medium'
+          className='text-neutral-900 dark:text-white font-medium hover:underline'
         >
           Sign in
         </Link>
