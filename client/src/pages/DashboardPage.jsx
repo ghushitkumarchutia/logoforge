@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
-import { useAuth } from "../hooks/useAuth.js";
 import {
   getAllProjects,
   deleteProject,
@@ -14,7 +13,6 @@ import { DashboardStats } from "../components/dashboard/DashboardStats.jsx";
 import toast from "react-hot-toast";
 
 export const DashboardPage = () => {
-  const { user } = useAuth();
   const [projects, setProjects] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
@@ -73,18 +71,15 @@ export const DashboardPage = () => {
   }, [projects, searchQuery]);
 
   return (
-    <div className='min-h-screen bg-gray-50 dark:bg-gray-900'>
+    <div className='min-h-screen flex flex-col bg-neutral-50 dark:bg-neutral-950'>
       <Navbar />
 
-      <main className='pt-20 pb-12'>
+      <main className='flex-1 pt-20 pb-12'>
         <PageContainer>
-          <div className='mb-8'>
-            <h1 className='text-3xl font-bold text-gray-900 dark:text-white mb-2'>
-              Welcome back, {user?.username || "User"}
+          <div className='mb-4'>
+            <h1 className='text-2xl font-semibold text-neutral-900 dark:text-white tracking-tight'>
+              Dashboard
             </h1>
-            <p className='text-gray-600 dark:text-gray-400'>
-              Manage your logo projects
-            </p>
           </div>
 
           <DashboardStats />

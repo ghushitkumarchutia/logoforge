@@ -33,7 +33,7 @@ export const Dropdown = ({ trigger, items, align = "left", className }) => {
         {isOpen && (
           <motion.div
             className={clsx(
-              "absolute z-50 mt-2 min-w-[180px] py-1 bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700",
+              "absolute z-50 mt-2 min-w-[180px] py-1 bg-white dark:bg-[#1a1a1a] rounded-xl border border-neutral-200 dark:border-neutral-800 shadow-lg dark:shadow-none",
               align === "left" ? "left-0" : "right-0",
             )}
             initial={{ opacity: 0, y: -10 }}
@@ -54,8 +54,8 @@ export const Dropdown = ({ trigger, items, align = "left", className }) => {
                 className={clsx(
                   "w-full flex items-center gap-2 px-4 py-2 text-left text-sm transition-colors",
                   item.disabled
-                    ? "text-gray-400 cursor-not-allowed"
-                    : "text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700",
+                    ? "text-neutral-400 cursor-not-allowed"
+                    : "text-neutral-700 dark:text-neutral-300 hover:bg-neutral-100 dark:hover:bg-neutral-800",
                 )}
               >
                 {item.icon && <span className='w-4 h-4'>{item.icon}</span>}

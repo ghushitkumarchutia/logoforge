@@ -7,7 +7,7 @@ export const Skeleton = ({
   lines = 3,
   className,
 }) => {
-  const baseClasses = "animate-pulse bg-gray-200 dark:bg-gray-700";
+  const baseClasses = "animate-pulse bg-neutral-200 dark:bg-neutral-800";
 
   if (variant === "circle") {
     return (
@@ -34,7 +34,12 @@ export const Skeleton = ({
 
   if (variant === "card") {
     return (
-      <div className={clsx("rounded-xl overflow-hidden", className)}>
+      <div
+        className={clsx(
+          "rounded-2xl overflow-hidden border border-neutral-200 dark:border-neutral-800",
+          className,
+        )}
+      >
         <div className={clsx(baseClasses, "h-40 w-full")} />
         <div className='p-4 space-y-3'>
           <div className={clsx(baseClasses, "h-4 rounded w-3/4")} />

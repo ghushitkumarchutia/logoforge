@@ -27,7 +27,7 @@ export const DashboardStats = () => {
         {[1, 2, 3].map((i) => (
           <div
             key={i}
-            className='animate-pulse bg-white dark:bg-gray-800 rounded-xl p-5 border border-gray-200 dark:border-gray-700 h-24'
+            className='animate-pulse bg-white dark:bg-[#1a1a1a] rounded-2xl p-5 border border-neutral-200 dark:border-neutral-800 h-[76px]'
           />
         ))}
       </div>
@@ -41,8 +41,6 @@ export const DashboardStats = () => {
       icon: FolderOpen,
       label: "Total Projects",
       value: stats.totalProjects || 0,
-      color: "text-green-500",
-      bg: "bg-green-100 dark:bg-green-900/30",
     },
     {
       icon: Clock,
@@ -51,15 +49,11 @@ export const DashboardStats = () => {
         stats.recentProjects?.length > 0
           ? formatDate(stats.recentProjects[0].updatedAt)
           : "No activity",
-      color: "text-purple-500",
-      bg: "bg-purple-100 dark:bg-purple-900/30",
     },
     {
       icon: CalendarDays,
       label: "Member Since",
       value: stats.memberSince ? formatDate(stats.memberSince) : "N/A",
-      color: "text-blue-500",
-      bg: "bg-blue-100 dark:bg-blue-900/30",
     },
   ];
 
@@ -68,18 +62,19 @@ export const DashboardStats = () => {
       {statCards.map((stat) => (
         <div
           key={stat.label}
-          className='bg-white dark:bg-gray-800 rounded-xl p-5 border border-gray-200 dark:border-gray-700 flex items-center gap-4'
+          className='bg-white dark:bg-[#1a1a1a] rounded-2xl p-5 border border-neutral-200 dark:border-neutral-800 flex items-center gap-4'
         >
-          <div
-            className={`w-12 h-12 ${stat.bg} rounded-xl flex items-center justify-center flex-shrink-0`}
-          >
-            <stat.icon size={24} className={stat.color} />
+          <div className='w-10 h-10 bg-neutral-100 dark:bg-neutral-800 rounded-xl flex items-center justify-center shrink-0'>
+            <stat.icon
+              size={20}
+              className='text-neutral-500 dark:text-neutral-400'
+            />
           </div>
           <div className='min-w-0'>
-            <p className='text-sm text-gray-500 dark:text-gray-400'>
+            <p className='text-xs text-neutral-500 dark:text-neutral-400'>
               {stat.label}
             </p>
-            <p className='text-lg font-semibold text-gray-900 dark:text-white truncate'>
+            <p className='text-base font-semibold text-neutral-900 dark:text-white truncate'>
               {stat.value}
             </p>
           </div>

@@ -10,8 +10,8 @@ export const ThemeToggle = ({ className }) => {
     <motion.button
       onClick={toggleTheme}
       className={clsx(
-        "p-2 rounded-lg transition-colors",
-        "text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800",
+        "p-2 rounded-lg transition-colors cursor-pointer",
+        "text-neutral-600 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-800",
         className,
       )}
       whileTap={{ scale: 0.9 }}

@@ -29,7 +29,7 @@ export const ConfirmDialog = ({
         </>
       }
     >
-      <p className='text-gray-600 dark:text-gray-300'>{message}</p>
+      <p className='text-neutral-600 dark:text-neutral-300'>{message}</p>
     </Modal>
   );
 };

@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Card } from "../common/Card";
 import { ConfirmDialog } from "../common/ConfirmDialog";
 import { Tooltip } from "../common/Tooltip";
 import { formatRelativeTime } from "../../utils/formatters";
@@ -27,9 +26,9 @@ export const ProjectCard = ({ project, onDelete, onDuplicate }) => {
 
   return (
     <>
-      <Card hoverable className='overflow-hidden group'>
+      <div className='bg-white dark:bg-[#1a1a1a] rounded-2xl border border-neutral-200 dark:border-neutral-800 overflow-hidden group transition-all duration-200 hover:border-neutral-300 dark:hover:border-neutral-700'>
         <Link to={`/editor/${project._id || project.id}`}>
-          <div className='aspect-video bg-gray-100 dark:bg-gray-700 relative overflow-hidden'>
+          <div className='aspect-video bg-neutral-100 dark:bg-neutral-800 relative overflow-hidden'>
             {project.thumbnail ? (
               <img
                 src={project.thumbnail}
@@ -37,8 +36,8 @@ export const ProjectCard = ({ project, onDelete, onDuplicate }) => {
                 className='w-full h-full object-cover'
               />
             ) : (
-              <div className='w-full h-full flex items-center justify-center text-gray-400'>
-                <span className='text-4xl font-bold'>
+              <div className='w-full h-full flex items-center justify-center'>
+                <span className='text-4xl font-bold text-neutral-300 dark:text-neutral-600'>
                   {project.projectName?.charAt(0)?.toUpperCase() || "P"}
                 </span>
               </div>
@@ -48,41 +47,41 @@ export const ProjectCard = ({ project, onDelete, onDuplicate }) => {
         <div className='p-4'>
           <div className='flex items-start justify-between'>
             <div className='flex-1 min-w-0'>
-              <h3 className='font-medium text-gray-900 dark:text-white truncate'>
+              <h3 className='font-medium text-neutral-900 dark:text-white truncate text-sm'>
                 {project.projectName}
               </h3>
-              <p className='text-sm text-gray-500 dark:text-gray-400 mt-1'>
+              <p className='text-xs text-neutral-500 dark:text-neutral-400 mt-1'>
                 {formatRelativeTime(project.updatedAt)}
               </p>
             </div>
-            <div className='flex items-center gap-1 ml-2 opacity-0 group-hover:opacity-100 transition-opacity'>
+            <div className='flex items-center gap-0.5 ml-2 opacity-0 group-hover:opacity-100 transition-opacity'>
               <Link
                 to={`/editor/${project._id || project.id}`}
-                className='p-2 text-gray-500 hover:text-green-500 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors'
+                className='p-1.5 text-neutral-400 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-lg transition-colors'
               >
-                <Edit size={16} />
+                <Edit size={14} />
               </Link>
               {onDuplicate && (
                 <Tooltip content='Duplicate' position='bottom'>
                   <button
                     onClick={handleDuplicate}
                     disabled={isDuplicating}
-                    className='p-2 text-gray-500 hover:text-blue-500 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors disabled:opacity-50'
+                    className='p-1.5 text-neutral-400 hover:text-neutral-900 dark:hover:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-lg transition-colors disabled:opacity-50 cursor-pointer'
                   >
-                    <Copy size={16} />
+                    <Copy size={14} />
                   </button>
                 </Tooltip>
               )}
               <button
                 onClick={() => setShowDeleteDialog(true)}
-                className='p-2 text-gray-500 hover:text-red-500 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors'
+                className='p-1.5 text-neutral-400 hover:text-red-500 hover:bg-neutral-100 dark:hover:bg-neutral-800 rounded-lg transition-colors cursor-pointer'
               >
-                <Trash2 size={16} />
+                <Trash2 size={14} />
               </button>
             </div>
           </div>
         </div>
-      </Card>
+      </div>
 
       <ConfirmDialog
         isOpen={showDeleteDialog}

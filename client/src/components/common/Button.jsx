@@ -2,20 +2,21 @@ import clsx from "clsx";
 import { Loader } from "./Loader";
 
 const variantClasses = {
-  primary: "bg-green-500 hover:bg-green-600 text-white",
+  primary:
+    "bg-neutral-900 hover:bg-neutral-800 text-white dark:bg-white dark:hover:bg-neutral-200 dark:text-neutral-900",
   secondary:
-    "bg-gray-200 hover:bg-gray-300 text-gray-800 dark:bg-gray-700 dark:hover:bg-gray-600 dark:text-white",
+    "bg-neutral-200 hover:bg-neutral-300 text-neutral-800 dark:bg-neutral-800 dark:hover:bg-neutral-700 dark:text-white",
   outline:
-    "border-2 border-green-500 text-green-500 hover:bg-green-500 hover:text-white",
+    "border border-neutral-300 dark:border-neutral-700 text-neutral-900 dark:text-white hover:bg-neutral-100 dark:hover:bg-neutral-800",
   ghost:
-    "text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800",
+    "text-neutral-600 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:bg-neutral-800",
   danger: "bg-red-500 hover:bg-red-600 text-white",
 };
 
 const sizeClasses = {
   sm: "px-3 py-1.5 text-sm",
-  md: "px-4 py-2 text-base",
-  lg: "px-6 py-3 text-lg",
+  md: "px-4 py-2 text-sm",
+  lg: "px-6 py-3 text-base",
 };
 
 export const Button = ({
@@ -38,8 +39,8 @@ export const Button = ({
       onClick={onClick}
       disabled={disabled || isLoading}
       className={clsx(
-        "inline-flex items-center justify-center font-medium rounded-lg transition-all duration-200",
-        "focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2",
+        "inline-flex items-center justify-center font-medium rounded-[10px] transition-colors cursor-pointer",
+        "focus:outline-none",
         "disabled:opacity-50 disabled:cursor-not-allowed",
         variantClasses[variant],
         sizeClasses[size],
