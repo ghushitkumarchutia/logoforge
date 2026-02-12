@@ -11,7 +11,10 @@ import {
 import clsx from "clsx";
 
 const getLayerIcon = (type) => {
-  const iconProps = { size: 16, className: "text-gray-500 dark:text-gray-400" };
+  const iconProps = {
+    size: 16,
+    className: "text-neutral-500 dark:text-neutral-400",
+  };
   switch (type) {
     case "rect":
     case "rectangle":

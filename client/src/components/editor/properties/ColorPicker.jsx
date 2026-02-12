@@ -78,7 +78,7 @@ export const ColorPicker = ({ color = "#000000", onChange, label }) => {
   return (
     <div className='relative' ref={containerRef}>
       {label && (
-        <label className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2'>
+        <label className='block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2'>
           {label}
         </label>
       )}
@@ -95,7 +95,9 @@ export const ColorPicker = ({ color = "#000000", onChange, label }) => {
           <HexColorPicker color={color} onChange={handleColorChange} />
 
           <div className='color-input-group'>
-            <span className='text-sm text-gray-500 dark:text-gray-400'>#</span>
+            <span className='text-sm text-neutral-500 dark:text-neutral-400'>
+              #
+            </span>
             <HexColorInput
               color={color}
               onChange={handleColorChange}

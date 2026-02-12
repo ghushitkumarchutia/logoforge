@@ -1,5 +1,4 @@
 import { useRef, useEffect, useContext, useState, useCallback } from "react";
-import * as fabric from "fabric";
 import { CanvasContext } from "../../contexts/CanvasContext.jsx";
 import { useKeyboardShortcuts } from "../../hooks/useKeyboardShortcuts.js";
 import { CanvasControls } from "./CanvasControls.jsx";
@@ -19,21 +18,8 @@ export const CanvasArea = () => {
   useEffect(() => {
     if (!canvasElRef.current || canvas) return;
 
-    const fabricCanvas = new fabric.Canvas(canvasElRef.current, {
-      width: CANVAS_DEFAULTS.width,
-      height: CANVAS_DEFAULTS.height,
-      backgroundColor: CANVAS_DEFAULTS.backgroundColor,
-      preserveObjectStacking: true,
-      selection: true,
-      controlsAboveOverlay: true,
-    });
-
-    canvasRef.current = fabricCanvas;
-    initCanvas?.(fabricCanvas);
-
-    return () => {
-      fabricCanvas.dispose();
-    };
+    canvasRef.current = canvasElRef.current;
+    initCanvas?.();
   }, [canvas, canvasRef, initCanvas]);
 
   const handleZoomIn = useCallback(() => {

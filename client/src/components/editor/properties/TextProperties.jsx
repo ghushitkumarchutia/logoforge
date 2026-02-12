@@ -96,13 +96,13 @@ export const TextProperties = ({ object, onUpdate }) => {
       </div>
 
       <div className='mb-3'>
-        <label className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1'>
+        <label className='block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1'>
           Font Family
         </label>
         <select
           value={properties.fontFamily}
           onChange={handleFontFamilyChange}
-          className='w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-green-500'
+          className='w-full px-3 py-2 bg-white dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-700 rounded-lg text-neutral-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-neutral-400 dark:focus:ring-neutral-500'
           style={{ fontFamily: properties.fontFamily }}
         >
           {fontOptions.map((font) => (
@@ -118,13 +118,13 @@ export const TextProperties = ({ object, onUpdate }) => {
       </div>
 
       <div className='mb-3'>
-        <label className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1'>
+        <label className='block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1'>
           Font Size
         </label>
         <select
           value={properties.fontSize}
           onChange={handleFontSizeChange}
-          className='w-full px-3 py-2 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-green-500'
+          className='w-full px-3 py-2 bg-white dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-700 rounded-lg text-neutral-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-neutral-400 dark:focus:ring-neutral-500'
         >
           {FONT_SIZES.map((size) => (
             <option key={size} value={size}>
@@ -135,7 +135,7 @@ export const TextProperties = ({ object, onUpdate }) => {
       </div>
 
       <div className='mb-3'>
-        <label className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1'>
+        <label className='block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1'>
           Style
         </label>
         <div className='flex gap-2'>
@@ -144,8 +144,8 @@ export const TextProperties = ({ object, onUpdate }) => {
             className={clsx(
               "flex-1 p-2 rounded-lg transition-colors flex items-center justify-center",
               properties.fontWeight === "bold"
-                ? "bg-green-500 text-white"
-                : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600",
+                ? "bg-neutral-900 text-white dark:bg-white dark:text-neutral-900"
+                : "bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-neutral-700",
             )}
             aria-label='Toggle bold'
           >
@@ -157,8 +157,8 @@ export const TextProperties = ({ object, onUpdate }) => {
             className={clsx(
               "flex-1 p-2 rounded-lg transition-colors flex items-center justify-center",
               properties.fontStyle === "italic"
-                ? "bg-green-500 text-white"
-                : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600",
+                ? "bg-neutral-900 text-white dark:bg-white dark:text-neutral-900"
+                : "bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-neutral-700",
             )}
             aria-label='Toggle italic'
           >
@@ -170,8 +170,8 @@ export const TextProperties = ({ object, onUpdate }) => {
             className={clsx(
               "flex-1 p-2 rounded-lg transition-colors flex items-center justify-center",
               properties.underline
-                ? "bg-green-500 text-white"
-                : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600",
+                ? "bg-neutral-900 text-white dark:bg-white dark:text-neutral-900"
+                : "bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-neutral-700",
             )}
             aria-label='Toggle underline'
           >
@@ -181,7 +181,7 @@ export const TextProperties = ({ object, onUpdate }) => {
       </div>
 
       <div>
-        <label className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1'>
+        <label className='block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-1'>
           Alignment
         </label>
         <div className='flex gap-2'>
@@ -194,8 +194,8 @@ export const TextProperties = ({ object, onUpdate }) => {
                 className={clsx(
                   "flex-1 p-2 rounded-lg transition-colors flex items-center justify-center",
                   properties.textAlign === option.value
-                    ? "bg-green-500 text-white"
-                    : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600",
+                    ? "bg-neutral-900 text-white dark:bg-white dark:text-neutral-900"
+                    : "bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-neutral-700",
                 )}
                 aria-label={`Align ${option.value}`}
               >

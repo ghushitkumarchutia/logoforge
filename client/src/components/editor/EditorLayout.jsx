@@ -17,7 +17,7 @@ export const EditorLayout = ({ onSave, isSaving = false }) => {
   }, []);
 
   return (
-    <div className='flex flex-col h-screen bg-gray-100 dark:bg-gray-900'>
+    <div className='flex flex-col h-screen bg-neutral-100 dark:bg-neutral-950'>
       <Toolbar onSave={onSave} isSaving={isSaving} />
 
       <div className='flex flex-1 overflow-hidden'>

@@ -85,8 +85,8 @@ export const IconLibraryModal = ({ isOpen, onClose, onSelectIcon }) => {
               className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                 activeCategory === category ||
                 (category === "All" && !activeCategory)
-                  ? "bg-green-500 text-white"
-                  : "bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700"
+                  ? "bg-neutral-900 text-white dark:bg-white dark:text-neutral-900"
+                  : "bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-neutral-700"
               }`}
             >
               {category}
@@ -104,7 +104,7 @@ export const IconLibraryModal = ({ isOpen, onClose, onSelectIcon }) => {
               {error}
             </div>
           ) : icons.length === 0 ? (
-            <div className='flex items-center justify-center h-[300px] text-gray-500 dark:text-gray-400'>
+            <div className='flex items-center justify-center h-[300px] text-neutral-500 dark:text-neutral-400'>
               No icons found
             </div>
           ) : (
@@ -113,24 +113,24 @@ export const IconLibraryModal = ({ isOpen, onClose, onSelectIcon }) => {
                 <button
                   key={icon._id || icon.id || icon.name}
                   onClick={() => handleIconClick(icon)}
-                  className='p-3 rounded-lg bg-gray-50 dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors group'
+                  className='p-3 rounded-lg bg-neutral-50 dark:bg-neutral-800 hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors group'
                   title={icon.name}
                 >
                   {icon.svg ? (
                     <div
-                      className='w-8 h-8 flex items-center justify-center text-gray-600 dark:text-gray-300 group-hover:text-green-500 transition-colors'
+                      className='w-8 h-8 flex items-center justify-center text-neutral-600 dark:text-neutral-300 group-hover:text-neutral-900 dark:group-hover:text-white transition-colors'
                       dangerouslySetInnerHTML={{ __html: icon.svg }}
                     />
                   ) : icon.path ? (
                     <svg
-                      className='w-8 h-8 text-gray-600 dark:text-gray-300 group-hover:text-green-500 transition-colors'
+                      className='w-8 h-8 text-neutral-600 dark:text-neutral-300 group-hover:text-neutral-900 dark:group-hover:text-white transition-colors'
                       viewBox='0 0 24 24'
                       fill='currentColor'
                     >
                       <path d={icon.path} />
                     </svg>
                   ) : (
-                    <div className='w-8 h-8 bg-gray-200 dark:bg-gray-700 rounded' />
+                    <div className='w-8 h-8 bg-neutral-200 dark:bg-neutral-700 rounded' />
                   )}
                 </button>
               ))}

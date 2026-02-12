@@ -93,10 +93,10 @@ export const TemplateModal = ({ isOpen, onClose, onSelectTemplate }) => {
 
         <div className='min-h-[350px] relative'>
           {isSelecting && (
-            <div className='absolute inset-0 bg-white/50 dark:bg-gray-800/50 flex items-center justify-center z-10 rounded-lg'>
+            <div className='absolute inset-0 bg-white/50 dark:bg-neutral-900/50 flex items-center justify-center z-10 rounded-lg'>
               <div className='text-center'>
                 <Loader size='lg' />
-                <p className='mt-2 text-sm text-gray-600 dark:text-gray-400'>
+                <p className='mt-2 text-sm text-neutral-600 dark:text-neutral-400'>
                   Loading template...
                 </p>
               </div>

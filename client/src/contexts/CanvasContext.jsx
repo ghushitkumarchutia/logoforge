@@ -1,4 +1,4 @@
-import { createContext, useState, useRef, useCallback } from "react";
+import { createContext, useState, useRef, useCallback, useEffect } from "react";
 import { useCanvas } from "../hooks/useCanvas";
 import { useCanvasHistory } from "../hooks/useCanvasHistory";
 import { useClipboard } from "../hooks/useClipboard";
@@ -8,6 +8,7 @@ export const CanvasContext = createContext(null);
 export const CanvasProvider = ({ children }) => {
   const canvasRef = useRef(null);
   const [isModified, setIsModified] = useState(false);
+  const saveTimerRef = useRef(null);
 
   const {
     canvas,
@@ -33,8 +34,15 @@ export const CanvasProvider = ({ children }) => {
     clearCanvas,
   } = useCanvas(canvasRef);
 
-  const { canUndo, canRedo, undo, redo, saveState, clearHistory } =
-    useCanvasHistory(canvas);
+  const {
+    canUndo,
+    canRedo,
+    undo,
+    redo,
+    saveState,
+    clearHistory,
+    isRestoringRef,
+  } = useCanvasHistory(canvas);
 
   const { hasClipboard, copy, cut, paste, duplicate } = useClipboard(canvas);
 
@@ -45,6 +53,32 @@ export const CanvasProvider = ({ children }) => {
   const markSaved = useCallback(() => {
     setIsModified(false);
   }, []);
+
+  useEffect(() => {
+    if (!canvas) return;
+
+    const debouncedSave = () => {
+      if (isRestoringRef.current) return;
+      if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
+      saveTimerRef.current = setTimeout(() => {
+        saveState();
+        setIsModified(true);
+      }, 100);
+    };
+
+    saveState();
+
+    canvas.on("object:added", debouncedSave);
+    canvas.on("object:removed", debouncedSave);
+    canvas.on("object:modified", debouncedSave);
+
+    return () => {
+      canvas.off("object:added", debouncedSave);
+      canvas.off("object:removed", debouncedSave);
+      canvas.off("object:modified", debouncedSave);
+      if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
+    };
+  }, [canvas, saveState]);
 
   const operations = {
     addShape,

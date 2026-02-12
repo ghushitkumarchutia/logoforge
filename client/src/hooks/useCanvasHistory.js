@@ -5,13 +5,14 @@ export const useCanvasHistory = (canvas) => {
   const [history, setHistory] = useState([]);
   const [historyIndex, setHistoryIndex] = useState(-1);
   const historyIndexRef = useRef(-1);
+  const isRestoringRef = useRef(false);
 
   useEffect(() => {
     historyIndexRef.current = historyIndex;
   }, [historyIndex]);
 
   const saveState = useCallback(() => {
-    if (!canvas) return;
+    if (!canvas || isRestoringRef.current) return;
 
     const currentState = JSON.stringify(canvas.toJSON());
     setHistory((prev) => {
@@ -31,8 +32,11 @@ export const useCanvasHistory = (canvas) => {
     const newIndex = historyIndex - 1;
     const state = history[newIndex];
 
+    isRestoringRef.current = true;
     await canvas.loadFromJSON(JSON.parse(state));
     canvas.renderAll();
+    isRestoringRef.current = false;
+
     setHistoryIndex(newIndex);
   }, [canvas, history, historyIndex]);
 
@@ -42,8 +46,11 @@ export const useCanvasHistory = (canvas) => {
     const newIndex = historyIndex + 1;
     const state = history[newIndex];
 
+    isRestoringRef.current = true;
     await canvas.loadFromJSON(JSON.parse(state));
     canvas.renderAll();
+    isRestoringRef.current = false;
+
     setHistoryIndex(newIndex);
   }, [canvas, history, historyIndex]);
 
@@ -59,5 +66,6 @@ export const useCanvasHistory = (canvas) => {
     redo,
     saveState,
     clearHistory,
+    isRestoringRef,
   };
 };

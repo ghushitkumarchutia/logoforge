@@ -109,7 +109,7 @@ export const ExportModal = ({ isOpen, onClose, defaultFormat = "png" }) => {
         />
 
         <div>
-          <label className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2'>
+          <label className='block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2'>
             Format
           </label>
           <div className='flex gap-2'>
@@ -119,8 +119,8 @@ export const ExportModal = ({ isOpen, onClose, defaultFormat = "png" }) => {
                 onClick={() => setFormat(option.value)}
                 className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-colors ${
                   format === option.value
-                    ? "bg-green-500 text-white"
-                    : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
+                    ? "bg-neutral-900 text-white dark:bg-white dark:text-neutral-900"
+                    : "bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-neutral-700"
                 }`}
               >
                 {option.label}
@@ -131,7 +131,7 @@ export const ExportModal = ({ isOpen, onClose, defaultFormat = "png" }) => {
 
         {format === "png" && (
           <div>
-            <label className='block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2'>
+            <label className='block text-sm font-medium text-neutral-700 dark:text-neutral-300 mb-2'>
               Resolution
             </label>
             <div className='flex gap-2'>
@@ -141,8 +141,8 @@ export const ExportModal = ({ isOpen, onClose, defaultFormat = "png" }) => {
                   onClick={() => setResolution(option.value)}
                   className={`flex-1 py-2 px-4 rounded-lg text-sm font-medium transition-colors ${
                     resolution === option.value
-                      ? "bg-green-500 text-white"
-                      : "bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600"
+                      ? "bg-neutral-900 text-white dark:bg-white dark:text-neutral-900"
+                      : "bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-neutral-700"
                   }`}
                 >
                   {option.label}
@@ -152,8 +152,8 @@ export const ExportModal = ({ isOpen, onClose, defaultFormat = "png" }) => {
           </div>
         )}
 
-        <div className='p-4 bg-gray-50 dark:bg-gray-900 rounded-lg'>
-          <p className='text-sm text-gray-600 dark:text-gray-400'>
+        <div className='p-4 bg-neutral-50 dark:bg-neutral-900 rounded-lg'>
+          <p className='text-sm text-neutral-600 dark:text-neutral-400'>
             <span className='font-medium'>Output:</span>{" "}
             {filename || "my-design"}.{format}
             {format === "png" && ` @ ${resolution}`}

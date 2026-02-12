@@ -41,7 +41,7 @@ export const CanvasControls = ({
         </Button>
       </Tooltip>
 
-      <div className='w-px h-5 bg-gray-300 dark:bg-gray-600 mx-1' />
+      <div className='w-px h-5 bg-neutral-300 dark:bg-neutral-700 mx-1' />
 
       <Tooltip content='Reset Zoom' position='top'>
         <Button
@@ -60,7 +60,10 @@ export const CanvasControls = ({
           variant={showGrid ? "secondary" : "ghost"}
           size='sm'
           onClick={onToggleGrid}
-          className={clsx("p-2", showGrid && "text-green-500")}
+          className={clsx(
+            "p-2",
+            showGrid && "text-neutral-900 dark:text-white",
+          )}
         >
           <Grid size={18} />
         </Button>

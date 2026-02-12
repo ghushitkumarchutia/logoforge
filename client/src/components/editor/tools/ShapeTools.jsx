@@ -5,7 +5,7 @@ import { Tooltip } from "../../common/Tooltip.jsx";
 import { Square, Circle, Triangle, Minus } from "lucide-react";
 
 const shapeOptions = [
-  { id: "rect", icon: Square, label: "Rectangle" },
+  { id: "rectangle", icon: Square, label: "Rectangle" },
   { id: "circle", icon: Circle, label: "Circle" },
   { id: "triangle", icon: Triangle, label: "Triangle" },
   { id: "line", icon: Minus, label: "Line" },

@@ -19,25 +19,25 @@
 }
 
 .dark .layer-item {
-  background: #374151;
+  background: #262626;
 }
 
 .layer-item:hover {
-  background: #f3f4f6;
+  background: #f5f5f5;
 }
 
 .dark .layer-item:hover {
-  background: #4b5563;
+  background: #333333;
 }
 
 .layer-item--selected {
-  background: #dcfce7 !important;
-  border: 1px solid #22c55e;
+  background: #f5f5f5 !important;
+  border: 1px solid #171717;
 }
 
 .dark .layer-item--selected {
-  background: rgba(34, 197, 94, 0.2) !important;
-  border-color: #22c55e;
+  background: rgba(255, 255, 255, 0.1) !important;
+  border-color: #ffffff;
 }
 
 .layer-item--dragging {
@@ -46,8 +46,13 @@
 }
 
 .layer-item--drop-target {
-  border: 2px dashed #22c55e;
-  background: rgba(34, 197, 94, 0.1);
+  border: 2px dashed #171717;
+  background: rgba(23, 23, 23, 0.05);
+}
+
+.dark .layer-item--drop-target {
+  border-color: #ffffff;
+  background: rgba(255, 255, 255, 0.05);
 }
 
 .layer-item--drop-above::before {
@@ -57,8 +62,12 @@
   right: 0;
   top: -2px;
   height: 3px;
-  background: #22c55e;
+  background: #171717;
   border-radius: 3px;
+}
+
+.dark .layer-item--drop-above::before {
+  background: #ffffff;
 }
 
 .layer-item--drop-below::after {
@@ -68,8 +77,12 @@
   right: 0;
   bottom: -2px;
   height: 3px;
-  background: #22c55e;
+  background: #171717;
   border-radius: 3px;
+}
+
+.dark .layer-item--drop-below::after {
+  background: #ffffff;
 }
 
 .layer-drag-ghost {
@@ -77,7 +90,7 @@
   pointer-events: none;
   z-index: 9999;
   padding: 8px 16px;
-  background: #22c55e;
+  background: #171717;
   color: #ffffff;
   border-radius: 8px;
   font-size: 14px;
@@ -86,11 +99,16 @@
   opacity: 0.9;
 }
 
+.dark .layer-drag-ghost {
+  background: #ffffff;
+  color: #171717;
+}
+
 .layer-thumbnail {
   width: 32px;
   height: 32px;
   border-radius: 4px;
-  background: #e5e7eb;
+  background: #e5e5e5;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -99,21 +117,21 @@
 }
 
 .dark .layer-thumbnail {
-  background: #1f2937;
+  background: #171717;
 }
 
 .layer-name {
   flex: 1;
   font-size: 14px;
   font-weight: 500;
-  color: #374151;
+  color: #171717;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
 .dark .layer-name {
-  color: #e5e7eb;
+  color: #e5e5e5;
 }
 
 .layer-actions {
@@ -131,18 +149,18 @@
 .layer-action-btn {
   padding: 4px;
   border-radius: 4px;
-  color: #6b7280;
+  color: #737373;
   transition:
     background-color 0.15s,
     color 0.15s;
 }
 
 .layer-action-btn:hover {
-  background: #e5e7eb;
-  color: #374151;
+  background: #e5e5e5;
+  color: #171717;
 }
 
 .dark .layer-action-btn:hover {
-  background: #1f2937;
-  color: #e5e7eb;
+  background: #262626;
+  color: #e5e5e5;
 }

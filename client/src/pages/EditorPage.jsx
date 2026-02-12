@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback, useContext } from "react";
-import { useParams, useNavigate, useBlocker } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { CanvasProvider, CanvasContext } from "../contexts/CanvasContext.jsx";
 import { getProjectById } from "../services/projectService.js";
 import { useAutoSave } from "../hooks/useAutoSave.js";
@@ -28,21 +28,15 @@ const EditorContent = () => {
     !!projectId,
   );
 
-  const blocker = useBlocker(
-    useCallback(() => {
-      if (isModified) {
-        return true;
-      }
-      return false;
-    }, [isModified]),
-  );
-
   useEffect(() => {
-    if (blocker.state === "blocked") {
-      setPendingNavigation(blocker);
-      setShowUnsavedModal(true);
-    }
-  }, [blocker.state, blocker]);
+    if (!isModified) return;
+    const handleBeforeUnload = (e) => {
+      e.preventDefault();
+      e.returnValue = "";
+    };
+    window.addEventListener("beforeunload", handleBeforeUnload);
+    return () => window.removeEventListener("beforeunload", handleBeforeUnload);
+  }, [isModified]);
 
   useEffect(() => {
     if (!projectId) {
@@ -127,10 +121,12 @@ const EditorContent = () => {
 
   if (isLoading) {
     return (
-      <div className='flex items-center justify-center h-screen bg-gray-100 dark:bg-gray-900'>
+      <div className='flex items-center justify-center h-screen bg-neutral-100 dark:bg-neutral-950'>
         <div className='flex flex-col items-center gap-4'>
           <Loader size='lg' />
-          <p className='text-gray-600 dark:text-gray-400'>Loading project...</p>
+          <p className='text-neutral-500 dark:text-neutral-400'>
+            Loading project...
+          </p>
         </div>
       </div>
     );

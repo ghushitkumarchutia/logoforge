@@ -127,7 +127,7 @@ export const SaveProjectModal = ({
           autoFocus
         />
 
-        <p className='text-sm text-gray-500 dark:text-gray-400'>
+        <p className='text-sm text-neutral-500 dark:text-neutral-400'>
           {projectId
             ? "Update the name for your existing project."
             : "Give your project a name to save it to your dashboard."}

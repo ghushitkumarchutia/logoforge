@@ -18,7 +18,7 @@ export const Toolbar = ({ onSave, isSaving = false }) => {
 
   return (
     <>
-      <div className='flex items-center justify-between h-14 px-4 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700'>
+      <div className='flex items-center justify-between h-14 px-4 bg-white dark:bg-[#1a1a1a] border-b border-neutral-200 dark:border-neutral-800'>
         <div className='flex items-center'>
           <ToolbarGroup label='Shapes'>
             <ShapeTools />
@@ -50,7 +50,7 @@ export const Toolbar = ({ onSave, isSaving = false }) => {
             <Tooltip content='Keyboard Shortcuts' position='bottom'>
               <button
                 onClick={() => setShowShortcuts(true)}
-                className='p-2 text-gray-600 hover:text-green-500 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 rounded-lg transition-colors'
+                className='p-2 text-neutral-500 hover:text-neutral-900 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:text-white dark:hover:bg-neutral-800 rounded-lg transition-colors'
               >
                 <Keyboard size={20} />
               </button>

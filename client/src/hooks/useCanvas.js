@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { Canvas, FabricImage, Path } from "fabric";
 import {
   createRectangle,
@@ -14,9 +14,11 @@ export const useCanvas = (canvasRef) => {
   const [canvas, setCanvas] = useState(null);
   const [selectedObject, setSelectedObject] = useState(null);
   const [objects, setObjects] = useState([]);
+  const initializedRef = useRef(false);
 
   const initCanvas = useCallback(() => {
-    if (!canvasRef.current || canvas) return;
+    if (!canvasRef.current || canvas || initializedRef.current) return;
+    initializedRef.current = true;
 
     const fabricCanvas = new Canvas(canvasRef.current, {
       width: CANVAS_DEFAULTS.width,
@@ -53,6 +55,7 @@ export const useCanvas = (canvasRef) => {
     return () => {
       if (canvas) {
         canvas.dispose();
+        initializedRef.current = false;
       }
     };
   }, [canvas]);

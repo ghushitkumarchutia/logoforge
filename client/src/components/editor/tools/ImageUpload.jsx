@@ -4,6 +4,7 @@ import { uploadImage } from "../../../services/uploadService";
 import { Tooltip } from "../../common/Tooltip.jsx";
 import toast from "react-hot-toast";
 import { ImagePlus } from "lucide-react";
+import { FabricImage } from "fabric";
 
 const API_ORIGIN =
   import.meta.env.VITE_API_BASE_URL?.replace("/api/v1", "") || "";
@@ -44,38 +45,29 @@ export const ImageUpload = () => {
         return;
       }
 
-      const fabric = await import("fabric");
-      const fabricModule = fabric.fabric || fabric;
+      const img = await FabricImage.fromURL(imageUrl, {
+        crossOrigin: "anonymous",
+      });
 
-      fabricModule.Image.fromURL(
-        imageUrl,
-        (img) => {
-          const maxWidth = canvas.width * 0.5;
-          const maxHeight = canvas.height * 0.5;
-          const scale = Math.min(
-            maxWidth / img.width,
-            maxHeight / img.height,
-            1,
-          );
+      const maxWidth = canvas.width * 0.5;
+      const maxHeight = canvas.height * 0.5;
+      const scale = Math.min(maxWidth / img.width, maxHeight / img.height, 1);
 
-          img.set({
-            left: canvas.width / 2,
-            top: canvas.height / 2,
-            originX: "center",
-            originY: "center",
-            scaleX: scale,
-            scaleY: scale,
-          });
+      img.set({
+        left: canvas.width / 2,
+        top: canvas.height / 2,
+        originX: "center",
+        originY: "center",
+        scaleX: scale,
+        scaleY: scale,
+      });
 
-          canvas.add(img);
-          canvas.setActiveObject(img);
-          canvas.renderAll();
+      canvas.add(img);
+      canvas.setActiveObject(img);
+      canvas.renderAll();
 
-          toast.dismiss(loadingToast);
-          toast.success("Image added to canvas");
-        },
-        { crossOrigin: "anonymous" },
-      );
+      toast.dismiss(loadingToast);
+      toast.success("Image added to canvas");
     } catch (error) {
       toast.dismiss(loadingToast);
       toast.error(error.message || "Failed to upload image");
@@ -94,7 +86,7 @@ export const ImageUpload = () => {
       <Tooltip content='Upload Image' position='bottom'>
         <button
           onClick={handleClick}
-          className='p-2 text-gray-600 hover:text-green-500 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700 rounded-lg transition-colors'
+          className='p-2 text-neutral-500 hover:text-neutral-900 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:text-white dark:hover:bg-neutral-800 rounded-lg transition-colors'
         >
           <ImagePlus size={20} />
         </button>

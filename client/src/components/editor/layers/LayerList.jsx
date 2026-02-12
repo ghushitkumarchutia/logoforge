@@ -88,7 +88,7 @@ export const LayerList = ({
 
   if (!layers || layers.length === 0) {
     return (
-      <div className='flex flex-col items-center justify-center py-12 text-gray-400 dark:text-gray-500'>
+      <div className='flex flex-col items-center justify-center py-12 text-neutral-400 dark:text-neutral-500'>
         <p className='text-sm'>No layers yet</p>
         <p className='text-xs mt-1'>Add shapes or text to get started</p>
       </div>

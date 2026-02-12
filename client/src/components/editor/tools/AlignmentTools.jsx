@@ -34,22 +34,22 @@ export const AlignmentTools = () => {
 
       switch (alignment) {
         case "left":
-          selectedObject.set("left", objectWidth / 2);
+          selectedObject.set("left", 0);
           break;
         case "center-h":
-          selectedObject.set("left", canvasWidth / 2);
+          selectedObject.set("left", (canvasWidth - objectWidth) / 2);
           break;
         case "right":
-          selectedObject.set("left", canvasWidth - objectWidth / 2);
+          selectedObject.set("left", canvasWidth - objectWidth);
           break;
         case "top":
-          selectedObject.set("top", objectHeight / 2);
+          selectedObject.set("top", 0);
           break;
         case "center-v":
-          selectedObject.set("top", canvasHeight / 2);
+          selectedObject.set("top", (canvasHeight - objectHeight) / 2);
           break;
         case "bottom":
-          selectedObject.set("top", canvasHeight - objectHeight / 2);
+          selectedObject.set("top", canvasHeight - objectHeight);
           break;
         default:
           break;

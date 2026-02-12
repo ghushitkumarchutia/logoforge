@@ -38,7 +38,7 @@ export const Sidebar = ({
   return (
     <motion.aside
       className={clsx(
-        "h-full bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 flex flex-col",
+        "h-full bg-white dark:bg-[#1a1a1a] border-neutral-200 dark:border-neutral-800 flex flex-col",
         side === "left" ? "border-r" : "border-l",
         className,
       )}
@@ -46,9 +46,9 @@ export const Sidebar = ({
       transition={{ duration: 0.2 }}
     >
       {title && (
-        <div className='flex items-center justify-between p-3 border-b border-gray-200 dark:border-gray-700 min-h-[48px]'>
+        <div className='flex items-center justify-between p-3 border-b border-neutral-200 dark:border-neutral-800 min-h-[48px]'>
           {!isCollapsed && (
-            <span className='font-medium text-gray-900 dark:text-white text-sm truncate'>
+            <span className='font-medium text-neutral-900 dark:text-white text-sm truncate'>
               {title}
             </span>
           )}
@@ -56,7 +56,7 @@ export const Sidebar = ({
             <button
               onClick={handleToggle}
               className={clsx(
-                "p-1.5 rounded-lg text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors",
+                "p-1.5 rounded-lg text-neutral-500 hover:bg-neutral-100 dark:hover:bg-neutral-800 transition-colors",
                 isCollapsed && "mx-auto",
               )}
             >
