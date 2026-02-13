@@ -1,4 +1,4 @@
-import { useContext, useCallback, useMemo } from "react";
+import { useContext, useCallback, useMemo, useState, useEffect } from "react";
 import { CanvasContext } from "../../../contexts/CanvasContext.jsx";
 import { Sidebar } from "../../layout/Sidebar.jsx";
 import { LayerList } from "./LayerList.jsx";
@@ -7,6 +7,23 @@ import "../../../styles/layers.css";
 
 export const LayerPanel = ({ collapsed, onToggle }) => {
   const { canvas, objects, selectedObject } = useContext(CanvasContext);
+  const [version, setVersion] = useState(0);
+
+  useEffect(() => {
+    if (!canvas) return;
+
+    const bump = () => setVersion((v) => v + 1);
+
+    canvas.on("object:modified", bump);
+    canvas.on("object:added", bump);
+    canvas.on("object:removed", bump);
+
+    return () => {
+      canvas.off("object:modified", bump);
+      canvas.off("object:added", bump);
+      canvas.off("object:removed", bump);
+    };
+  }, [canvas]);
 
   const layers = useMemo(() => {
     if (!objects || objects.length === 0) return [];
@@ -18,7 +35,8 @@ export const LayerPanel = ({ collapsed, onToggle }) => {
       visible: obj.visible !== false,
       locked: obj.selectable === false || obj.evented === false,
     }));
-  }, [objects]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [objects, version]);
 
   const selectedId = useMemo(() => {
     if (!selectedObject) return null;
@@ -55,6 +73,7 @@ export const LayerPanel = ({ collapsed, onToggle }) => {
       if (target) {
         target.set("visible", !target.visible);
         canvas.requestRenderAll();
+        canvas.fire("object:modified", { target });
       }
     },
     [canvas],
@@ -74,8 +93,15 @@ export const LayerPanel = ({ collapsed, onToggle }) => {
         target.set({
           selectable: isLocked,
           evented: isLocked,
+          hasControls: isLocked,
         });
+
+        if (!isLocked && canvas.getActiveObject() === target) {
+          canvas.discardActiveObject();
+        }
+
         canvas.requestRenderAll();
+        canvas.fire("object:modified", { target });
       }
     },
     [canvas],

@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useContext } from "react";
+import { useState, useEffect, useCallback, useContext, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { CanvasProvider, CanvasContext } from "../contexts/CanvasContext.jsx";
 import { getProjectById } from "../services/projectService.js";
@@ -38,11 +38,15 @@ const EditorContent = () => {
     return () => window.removeEventListener("beforeunload", handleBeforeUnload);
   }, [isModified]);
 
+  const loadedRef = useRef(false);
+
   useEffect(() => {
     if (!projectId) {
       setIsLoading(false);
       return;
     }
+
+    if (!canvas || loadedRef.current) return;
 
     const loadProject = async () => {
       try {
@@ -50,15 +54,16 @@ const EditorContent = () => {
         const project = response.data?.project || response.data;
 
         if (project) {
-          setProjectName(project.name || "Untitled Project");
+          setProjectName(project.projectName || "Untitled Project");
 
           if (project.canvasData && operations.loadFromJSON) {
             const canvasData =
               typeof project.canvasData === "string"
                 ? JSON.parse(project.canvasData)
                 : project.canvasData;
-            operations.loadFromJSON(canvasData);
+            await operations.loadFromJSON(canvasData);
           }
+          loadedRef.current = true;
         }
       } catch {
         toast.error("Failed to load project");
@@ -68,10 +73,9 @@ const EditorContent = () => {
       }
     };
 
-    if (canvas) {
-      loadProject();
-    }
-  }, [projectId, canvas, operations, navigate]);
+    loadProject();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [projectId, canvas, navigate]);
 
   useEffect(() => {
     if (isModified) {
@@ -119,22 +123,20 @@ const EditorContent = () => {
     setPendingNavigation(null);
   }, [pendingNavigation]);
 
-  if (isLoading) {
-    return (
-      <div className='flex items-center justify-center h-screen bg-neutral-100 dark:bg-neutral-950'>
-        <div className='flex flex-col items-center gap-4'>
-          <Loader size='lg' />
-          <p className='text-neutral-500 dark:text-neutral-400'>
-            Loading project...
-          </p>
-        </div>
-      </div>
-    );
-  }
-
   return (
     <>
       <EditorLayout onSave={handleSave} isSaving={isSaving} />
+
+      {isLoading && (
+        <div className='fixed inset-0 z-50 flex items-center justify-center bg-neutral-100/80 dark:bg-neutral-950/80 backdrop-blur-sm'>
+          <div className='flex flex-col items-center gap-4'>
+            <Loader size='lg' />
+            <p className='text-neutral-500 dark:text-neutral-400'>
+              Loading project...
+            </p>
+          </div>
+        </div>
+      )}
 
       <SaveProjectModal
         isOpen={showSaveModal}

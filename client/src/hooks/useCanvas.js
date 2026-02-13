@@ -40,12 +40,16 @@ export const useCanvas = (canvasRef) => {
       setSelectedObject(null);
     });
 
-    fabricCanvas.on("object:added", () => {
-      setObjects(fabricCanvas.getObjects());
+    fabricCanvas.on("object:added", (e) => {
+      const obj = e.target;
+      if (obj && !obj.id) {
+        obj.id = `obj_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+      }
+      setObjects([...fabricCanvas.getObjects()]);
     });
 
     fabricCanvas.on("object:removed", () => {
-      setObjects(fabricCanvas.getObjects());
+      setObjects([...fabricCanvas.getObjects()]);
     });
 
     setCanvas(fabricCanvas);
@@ -228,8 +232,13 @@ export const useCanvas = (canvasRef) => {
     async (json) => {
       if (!canvas) return;
       await canvas.loadFromJSON(json);
+      canvas.getObjects().forEach((obj) => {
+        if (!obj.id) {
+          obj.id = `obj_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+        }
+      });
       canvas.renderAll();
-      setObjects(canvas.getObjects());
+      setObjects([...canvas.getObjects()]);
     },
     [canvas],
   );

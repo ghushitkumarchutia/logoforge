@@ -55,8 +55,8 @@ export const SaveProjectModal = ({
       const canvasData = operations.getCanvasJSON();
 
       const projectData = {
-        name: projectName.trim(),
-        canvasData: JSON.stringify(canvasData),
+        projectName: projectName.trim(),
+        canvasData,
         thumbnail,
       };
 

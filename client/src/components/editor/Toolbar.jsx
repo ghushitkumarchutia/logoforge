@@ -1,4 +1,5 @@
 import { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import { CanvasContext } from "../../contexts/CanvasContext.jsx";
 import { ShapeTools } from "./tools/ShapeTools.jsx";
 import { TextTool } from "./tools/TextTool.jsx";
@@ -10,9 +11,10 @@ import { ToolbarGroup } from "./ToolbarGroup.jsx";
 import { KeyboardShortcutsModal } from "./modals/KeyboardShortcutsModal.jsx";
 import { Button } from "../common/Button.jsx";
 import { Tooltip } from "../common/Tooltip.jsx";
-import { Save, Keyboard } from "lucide-react";
+import { Save, Keyboard, ArrowLeft } from "lucide-react";
 
 export const Toolbar = ({ onSave, isSaving = false }) => {
+  const navigate = useNavigate();
   const { isModified } = useContext(CanvasContext);
   const [showShortcuts, setShowShortcuts] = useState(false);
 
@@ -20,6 +22,16 @@ export const Toolbar = ({ onSave, isSaving = false }) => {
     <>
       <div className='flex items-center justify-between h-14 px-4 bg-white dark:bg-[#1a1a1a] border-b border-neutral-200 dark:border-neutral-800'>
         <div className='flex items-center'>
+          <Tooltip content='Back to Dashboard' position='bottom'>
+            <button
+              onClick={() => navigate("/dashboard")}
+              className='p-2 mr-2 text-neutral-500 hover:text-neutral-900 hover:bg-neutral-100 dark:text-neutral-400 dark:hover:text-white dark:hover:bg-neutral-800 rounded-lg transition-colors'
+            >
+              <ArrowLeft size={20} />
+            </button>
+          </Tooltip>
+
+          <div className='w-px h-6 bg-neutral-200 dark:bg-neutral-700 mr-3' />
           <ToolbarGroup label='Shapes'>
             <ShapeTools />
           </ToolbarGroup>
