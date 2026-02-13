@@ -1,4 +1,4 @@
-import { useMemo, useCallback } from "react";
+import { useCallback } from "react";
 import { ColorPicker } from "./ColorPicker.jsx";
 import { fontOptions } from "../../../data/fontOptions.js";
 import { FONT_SIZES } from "../../../utils/constants.js";
@@ -18,30 +18,14 @@ const alignOptions = [
   { value: "right", icon: AlignRight },
 ];
 
-export const TextProperties = ({ object, onUpdate }) => {
-  const properties = useMemo(() => {
-    if (!object) {
-      return {
-        fill: "#111827",
-        fontFamily: "Arial",
-        fontSize: 24,
-        fontWeight: "normal",
-        fontStyle: "normal",
-        underline: false,
-        textAlign: "left",
-      };
-    }
-
-    return {
-      fill: object.fill || "#111827",
-      fontFamily: object.fontFamily || "Arial",
-      fontSize: object.fontSize || 24,
-      fontWeight: object.fontWeight || "normal",
-      fontStyle: object.fontStyle || "normal",
-      underline: object.underline || false,
-      textAlign: object.textAlign || "left",
-    };
-  }, [object]);
+export const TextProperties = ({ object, onUpdate, version }) => {
+  const fill = object?.fill || "#111827";
+  const fontFamily = object?.fontFamily || "Arial";
+  const fontSize = object?.fontSize || 24;
+  const fontWeight = object?.fontWeight || "normal";
+  const fontStyle = object?.fontStyle || "normal";
+  const underline = object?.underline || false;
+  const textAlign = object?.textAlign || "left";
 
   const handleColorChange = useCallback(
     (color) => {
@@ -66,18 +50,22 @@ export const TextProperties = ({ object, onUpdate }) => {
   );
 
   const toggleBold = useCallback(() => {
-    const newWeight = properties.fontWeight === "bold" ? "normal" : "bold";
-    onUpdate?.({ fontWeight: newWeight });
-  }, [properties.fontWeight, onUpdate]);
+    if (!object) return;
+    const current = object.fontWeight || "normal";
+    onUpdate?.({ fontWeight: current === "bold" ? "normal" : "bold" });
+  }, [object, onUpdate]);
 
   const toggleItalic = useCallback(() => {
-    const newStyle = properties.fontStyle === "italic" ? "normal" : "italic";
-    onUpdate?.({ fontStyle: newStyle });
-  }, [properties.fontStyle, onUpdate]);
+    if (!object) return;
+    const current = object.fontStyle || "normal";
+    onUpdate?.({ fontStyle: current === "italic" ? "normal" : "italic" });
+  }, [object, onUpdate]);
 
   const toggleUnderline = useCallback(() => {
-    onUpdate?.({ underline: !properties.underline });
-  }, [properties.underline, onUpdate]);
+    if (!object) return;
+    const current = !!object.underline;
+    onUpdate?.({ underline: !current });
+  }, [object, onUpdate]);
 
   const handleAlignChange = useCallback(
     (align) => {
@@ -92,7 +80,7 @@ export const TextProperties = ({ object, onUpdate }) => {
 
       <div className='properties-row'>
         <span className='properties-label'>Color</span>
-        <ColorPicker color={properties.fill} onChange={handleColorChange} />
+        <ColorPicker color={fill} onChange={handleColorChange} />
       </div>
 
       <div className='mb-3'>
@@ -100,10 +88,10 @@ export const TextProperties = ({ object, onUpdate }) => {
           Font Family
         </label>
         <select
-          value={properties.fontFamily}
+          value={fontFamily}
           onChange={handleFontFamilyChange}
           className='w-full px-3 py-2 bg-white dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-700 rounded-lg text-neutral-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-neutral-400 dark:focus:ring-neutral-500'
-          style={{ fontFamily: properties.fontFamily }}
+          style={{ fontFamily }}
         >
           {fontOptions.map((font) => (
             <option
@@ -122,7 +110,7 @@ export const TextProperties = ({ object, onUpdate }) => {
           Font Size
         </label>
         <select
-          value={properties.fontSize}
+          value={fontSize}
           onChange={handleFontSizeChange}
           className='w-full px-3 py-2 bg-white dark:bg-neutral-900 border border-neutral-300 dark:border-neutral-700 rounded-lg text-neutral-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-neutral-400 dark:focus:ring-neutral-500'
         >
@@ -143,7 +131,7 @@ export const TextProperties = ({ object, onUpdate }) => {
             onClick={toggleBold}
             className={clsx(
               "flex-1 p-2 rounded-lg transition-colors flex items-center justify-center",
-              properties.fontWeight === "bold"
+              fontWeight === "bold"
                 ? "bg-neutral-900 text-white dark:bg-white dark:text-neutral-900"
                 : "bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-neutral-700",
             )}
@@ -156,7 +144,7 @@ export const TextProperties = ({ object, onUpdate }) => {
             onClick={toggleItalic}
             className={clsx(
               "flex-1 p-2 rounded-lg transition-colors flex items-center justify-center",
-              properties.fontStyle === "italic"
+              fontStyle === "italic"
                 ? "bg-neutral-900 text-white dark:bg-white dark:text-neutral-900"
                 : "bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-neutral-700",
             )}
@@ -169,7 +157,7 @@ export const TextProperties = ({ object, onUpdate }) => {
             onClick={toggleUnderline}
             className={clsx(
               "flex-1 p-2 rounded-lg transition-colors flex items-center justify-center",
-              properties.underline
+              underline
                 ? "bg-neutral-900 text-white dark:bg-white dark:text-neutral-900"
                 : "bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-neutral-700",
             )}
@@ -193,7 +181,7 @@ export const TextProperties = ({ object, onUpdate }) => {
                 onClick={() => handleAlignChange(option.value)}
                 className={clsx(
                   "flex-1 p-2 rounded-lg transition-colors flex items-center justify-center",
-                  properties.textAlign === option.value
+                  textAlign === option.value
                     ? "bg-neutral-900 text-white dark:bg-white dark:text-neutral-900"
                     : "bg-neutral-100 dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300 hover:bg-neutral-200 dark:hover:bg-neutral-700",
                 )}

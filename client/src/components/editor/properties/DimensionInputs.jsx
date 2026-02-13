@@ -1,25 +1,14 @@
-import { useMemo, useCallback } from "react";
+import { useCallback } from "react";
 import { Input } from "../../common/Input.jsx";
 
-export const DimensionInputs = ({ object, onUpdate }) => {
-  const dimensions = useMemo(() => {
-    if (!object) {
-      return { width: 0, height: 0, left: 0, top: 0, angle: 0 };
-    }
-
-    const scaledWidth = Math.round((object.width || 0) * (object.scaleX || 1));
-    const scaledHeight = Math.round(
-      (object.height || 0) * (object.scaleY || 1),
-    );
-
-    return {
-      width: scaledWidth,
-      height: scaledHeight,
-      left: Math.round(object.left || 0),
-      top: Math.round(object.top || 0),
-      angle: Math.round(object.angle || 0),
-    };
-  }, [object]);
+export const DimensionInputs = ({ object, onUpdate, version }) => {
+  const scaledWidth = Math.round((object?.width || 0) * (object?.scaleX || 1));
+  const scaledHeight = Math.round(
+    (object?.height || 0) * (object?.scaleY || 1),
+  );
+  const left = Math.round(object?.left || 0);
+  const top = Math.round(object?.top || 0);
+  const angle = Math.round(object?.angle || 0);
 
   const handleWidthChange = useCallback(
     (e) => {
@@ -77,7 +66,7 @@ export const DimensionInputs = ({ object, onUpdate }) => {
           label='Width'
           name='width'
           type='number'
-          value={dimensions.width}
+          value={scaledWidth}
           onChange={handleWidthChange}
           className='properties-input-wrapper'
         />
@@ -86,7 +75,7 @@ export const DimensionInputs = ({ object, onUpdate }) => {
           label='Height'
           name='height'
           type='number'
-          value={dimensions.height}
+          value={scaledHeight}
           onChange={handleHeightChange}
           className='properties-input-wrapper'
         />
@@ -95,7 +84,7 @@ export const DimensionInputs = ({ object, onUpdate }) => {
           label='X Position'
           name='left'
           type='number'
-          value={dimensions.left}
+          value={left}
           onChange={handleLeftChange}
           className='properties-input-wrapper'
         />
@@ -104,7 +93,7 @@ export const DimensionInputs = ({ object, onUpdate }) => {
           label='Y Position'
           name='top'
           type='number'
-          value={dimensions.top}
+          value={top}
           onChange={handleTopChange}
           className='properties-input-wrapper'
         />
@@ -115,7 +104,7 @@ export const DimensionInputs = ({ object, onUpdate }) => {
           label='Rotation'
           name='angle'
           type='number'
-          value={dimensions.angle}
+          value={angle}
           onChange={handleAngleChange}
           className='properties-input-wrapper'
           helperText='Degrees (0-360)'

@@ -1,4 +1,4 @@
-import { useContext, useCallback, useMemo } from "react";
+import { useContext, useCallback, useState, useEffect } from "react";
 import { CanvasContext } from "../../../contexts/CanvasContext.jsx";
 import { Sidebar } from "../../layout/Sidebar.jsx";
 import { ShapeProperties } from "./ShapeProperties.jsx";
@@ -21,19 +21,35 @@ const SHAPE_TYPES = [
 
 export const PropertiesPanel = ({ collapsed, onToggle }) => {
   const { canvas, selectedObject } = useContext(CanvasContext);
+  const [version, setVersion] = useState(0);
 
-  const objectType = useMemo(() => {
-    if (!selectedObject) return null;
-    return selectedObject.type?.toLowerCase() || null;
-  }, [selectedObject]);
+  useEffect(() => {
+    if (!canvas) return;
 
-  const isTextObject = useMemo(() => {
-    return objectType && TEXT_TYPES.includes(objectType);
-  }, [objectType]);
+    const bumpVersion = () => setVersion((v) => v + 1);
 
-  const isShapeObject = useMemo(() => {
-    return objectType && SHAPE_TYPES.includes(objectType);
-  }, [objectType]);
+    canvas.on("object:modified", bumpVersion);
+    canvas.on("selection:created", bumpVersion);
+    canvas.on("selection:updated", bumpVersion);
+    canvas.on("selection:cleared", bumpVersion);
+    canvas.on("object:scaling", bumpVersion);
+    canvas.on("object:moving", bumpVersion);
+    canvas.on("object:rotating", bumpVersion);
+
+    return () => {
+      canvas.off("object:modified", bumpVersion);
+      canvas.off("selection:created", bumpVersion);
+      canvas.off("selection:updated", bumpVersion);
+      canvas.off("selection:cleared", bumpVersion);
+      canvas.off("object:scaling", bumpVersion);
+      canvas.off("object:moving", bumpVersion);
+      canvas.off("object:rotating", bumpVersion);
+    };
+  }, [canvas]);
+
+  const objectType = selectedObject?.type?.toLowerCase() || null;
+  const isTextObject = objectType && TEXT_TYPES.includes(objectType);
+  const isShapeObject = objectType && SHAPE_TYPES.includes(objectType);
 
   const handleUpdate = useCallback(
     (updates) => {
@@ -70,19 +86,32 @@ export const PropertiesPanel = ({ collapsed, onToggle }) => {
     return (
       <>
         {isTextObject && (
-          <TextProperties object={selectedObject} onUpdate={handleUpdate} />
+          <TextProperties
+            object={selectedObject}
+            onUpdate={handleUpdate}
+            version={version}
+          />
         )}
 
         {isShapeObject && (
-          <ShapeProperties object={selectedObject} onUpdate={handleUpdate} />
+          <ShapeProperties
+            object={selectedObject}
+            onUpdate={handleUpdate}
+            version={version}
+          />
         )}
 
         <OpacitySlider
           value={selectedObject.opacity ?? 1}
           onChange={handleOpacityChange}
+          version={version}
         />
 
-        <DimensionInputs object={selectedObject} onUpdate={handleUpdate} />
+        <DimensionInputs
+          object={selectedObject}
+          onUpdate={handleUpdate}
+          version={version}
+        />
       </>
     );
   };

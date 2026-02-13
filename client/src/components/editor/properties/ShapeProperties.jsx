@@ -1,26 +1,11 @@
-import { useMemo, useCallback } from "react";
+import { useCallback } from "react";
 import { ColorPicker } from "./ColorPicker.jsx";
 
-export const ShapeProperties = ({ object, onUpdate }) => {
-  const properties = useMemo(() => {
-    if (!object) {
-      return {
-        fill: "#3b82f6",
-        stroke: "#1e40af",
-        strokeWidth: 0,
-        rx: 0,
-        ry: 0,
-      };
-    }
-
-    return {
-      fill: object.fill || "#3b82f6",
-      stroke: object.stroke || "#1e40af",
-      strokeWidth: object.strokeWidth || 0,
-      rx: object.rx || 0,
-      ry: object.ry || 0,
-    };
-  }, [object]);
+export const ShapeProperties = ({ object, onUpdate, version }) => {
+  const fill = object?.fill || "#3b82f6";
+  const stroke = object?.stroke || "#1e40af";
+  const strokeWidth = object?.strokeWidth || 0;
+  const rx = object?.rx || 0;
 
   const handleFillChange = useCallback(
     (color) => {
@@ -60,12 +45,12 @@ export const ShapeProperties = ({ object, onUpdate }) => {
 
       <div className='properties-row'>
         <span className='properties-label'>Fill Color</span>
-        <ColorPicker color={properties.fill} onChange={handleFillChange} />
+        <ColorPicker color={fill} onChange={handleFillChange} />
       </div>
 
       <div className='properties-row'>
         <span className='properties-label'>Stroke Color</span>
-        <ColorPicker color={properties.stroke} onChange={handleStrokeChange} />
+        <ColorPicker color={stroke} onChange={handleStrokeChange} />
       </div>
 
       <div className='properties-row'>
@@ -74,7 +59,7 @@ export const ShapeProperties = ({ object, onUpdate }) => {
           type='number'
           min='0'
           max='50'
-          value={properties.strokeWidth}
+          value={strokeWidth}
           onChange={handleStrokeWidthChange}
           className='properties-input'
         />
@@ -87,7 +72,7 @@ export const ShapeProperties = ({ object, onUpdate }) => {
             type='number'
             min='0'
             max='100'
-            value={properties.rx}
+            value={rx}
             onChange={handleCornerRadiusChange}
             className='properties-input'
           />
