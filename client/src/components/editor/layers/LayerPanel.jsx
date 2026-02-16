@@ -6,7 +6,8 @@ import { Layers } from "lucide-react";
 import "../../../styles/layers.css";
 
 export const LayerPanel = ({ collapsed, onToggle }) => {
-  const { canvas, objects, selectedObject } = useContext(CanvasContext);
+  const { canvas, objects, selectedObject, operations } =
+    useContext(CanvasContext);
   const [version, setVersion] = useState(0);
 
   useEffect(() => {
@@ -28,13 +29,16 @@ export const LayerPanel = ({ collapsed, onToggle }) => {
   const layers = useMemo(() => {
     if (!objects || objects.length === 0) return [];
 
-    return objects.map((obj, index) => ({
-      id: obj.id || obj.uuid || `layer-${index}`,
-      name: obj.name || obj.text || `${obj.type || "Object"}`,
-      type: obj.type,
-      visible: obj.visible !== false,
-      locked: obj.selectable === false || obj.evented === false,
-    }));
+    return [...objects]
+      .map((obj, index) => ({
+        id: obj.id || obj.uuid || `layer-${index}`,
+        name: obj.name || obj.text || `${obj.type || "Object"}`,
+        type: obj.type,
+        visible: obj.visible !== false,
+        locked: obj.selectable === false || obj.evented === false,
+        zIndex: index,
+      }))
+      .reverse();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [objects, version]);
 
@@ -107,6 +111,42 @@ export const LayerPanel = ({ collapsed, onToggle }) => {
     [canvas],
   );
 
+  const handleMoveUp = useCallback(
+    (id) => {
+      if (!canvas) return;
+
+      const canvasObjects = canvas.getObjects();
+      const target = canvasObjects.find(
+        (obj) => obj.id === id || obj.uuid === id,
+      );
+
+      if (target) {
+        canvas.bringObjectForward(target);
+        canvas.requestRenderAll();
+        canvas.fire("object:modified", { target });
+      }
+    },
+    [canvas],
+  );
+
+  const handleMoveDown = useCallback(
+    (id) => {
+      if (!canvas) return;
+
+      const canvasObjects = canvas.getObjects();
+      const target = canvasObjects.find(
+        (obj) => obj.id === id || obj.uuid === id,
+      );
+
+      if (target) {
+        canvas.sendObjectBackwards(target);
+        canvas.requestRenderAll();
+        canvas.fire("object:modified", { target });
+      }
+    },
+    [canvas],
+  );
+
   const handleReorder = useCallback(
     (newLayers) => {
       if (!canvas) return;
@@ -119,7 +159,9 @@ export const LayerPanel = ({ collapsed, onToggle }) => {
         if (key) objectMap.set(key, obj);
       });
 
-      newLayers.forEach((layer, index) => {
+      const reversed = [...newLayers].reverse();
+
+      reversed.forEach((layer, index) => {
         const obj = objectMap.get(layer.id);
         if (obj) {
           canvas.moveTo(obj, index);
@@ -127,6 +169,7 @@ export const LayerPanel = ({ collapsed, onToggle }) => {
       });
 
       canvas.requestRenderAll();
+      canvas.fire("object:modified", { target: canvasObjects[0] });
     },
     [canvas],
   );
@@ -152,6 +195,9 @@ export const LayerPanel = ({ collapsed, onToggle }) => {
         onSelect={handleSelect}
         onToggleVisibility={handleToggleVisibility}
         onToggleLock={handleToggleLock}
+        onMoveUp={handleMoveUp}
+        onMoveDown={handleMoveDown}
+        totalLayers={layers.length}
       />
     </Sidebar>
   );

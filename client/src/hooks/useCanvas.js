@@ -52,6 +52,10 @@ export const useCanvas = (canvasRef) => {
       setObjects([...fabricCanvas.getObjects()]);
     });
 
+    fabricCanvas.on("object:modified", () => {
+      setObjects([...fabricCanvas.getObjects()]);
+    });
+
     setCanvas(fabricCanvas);
   }, [canvasRef, canvas]);
 
@@ -202,25 +206,33 @@ export const useCanvas = (canvasRef) => {
   const bringForward = useCallback(() => {
     if (!canvas || !selectedObject) return;
     canvas.bringObjectForward(selectedObject);
+    setObjects([...canvas.getObjects()]);
     canvas.renderAll();
+    canvas.fire("object:modified", { target: selectedObject });
   }, [canvas, selectedObject]);
 
   const sendBackward = useCallback(() => {
     if (!canvas || !selectedObject) return;
     canvas.sendObjectBackwards(selectedObject);
+    setObjects([...canvas.getObjects()]);
     canvas.renderAll();
+    canvas.fire("object:modified", { target: selectedObject });
   }, [canvas, selectedObject]);
 
   const bringToFront = useCallback(() => {
     if (!canvas || !selectedObject) return;
     canvas.bringObjectToFront(selectedObject);
+    setObjects([...canvas.getObjects()]);
     canvas.renderAll();
+    canvas.fire("object:modified", { target: selectedObject });
   }, [canvas, selectedObject]);
 
   const sendToBack = useCallback(() => {
     if (!canvas || !selectedObject) return;
     canvas.sendObjectToBack(selectedObject);
+    setObjects([...canvas.getObjects()]);
     canvas.renderAll();
+    canvas.fire("object:modified", { target: selectedObject });
   }, [canvas, selectedObject]);
 
   const getCanvasJSON = useCallback(() => {

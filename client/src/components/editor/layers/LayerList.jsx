@@ -8,6 +8,8 @@ export const LayerList = ({
   onSelect,
   onToggleVisibility,
   onToggleLock,
+  onMoveUp,
+  onMoveDown,
 }) => {
   const [dragState, setDragState] = useState({
     draggingId: null,
@@ -97,7 +99,7 @@ export const LayerList = ({
 
   return (
     <div className='layer-list' onDragLeave={handleDragLeave}>
-      {layers.map((layer) => (
+      {layers.map((layer, index) => (
         <LayerItem
           key={layer.id}
           layer={layer}
@@ -105,6 +107,10 @@ export const LayerList = ({
           onSelect={onSelect}
           onToggleVisibility={onToggleVisibility}
           onToggleLock={onToggleLock}
+          onMoveUp={onMoveUp}
+          onMoveDown={onMoveDown}
+          isFirst={index === 0}
+          isLast={index === layers.length - 1}
           isDragging={dragState.draggingId === layer.id}
           isDropTarget={
             dragState.dropTargetId === layer.id &&

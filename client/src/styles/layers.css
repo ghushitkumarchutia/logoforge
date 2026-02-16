@@ -164,3 +164,9 @@
   background: #262626;
   color: #e5e5e5;
 }
+
+.layer-action-btn:disabled {
+  opacity: 0.25;
+  cursor: not-allowed;
+  pointer-events: none;
+}

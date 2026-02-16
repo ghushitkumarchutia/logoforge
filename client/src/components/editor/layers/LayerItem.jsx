@@ -7,6 +7,10 @@ import {
   Circle,
   Type,
   Image,
+  Triangle,
+  Minus,
+  ChevronUp,
+  ChevronDown,
 } from "lucide-react";
 import clsx from "clsx";
 
@@ -22,6 +26,10 @@ const getLayerIcon = (type) => {
     case "circle":
     case "ellipse":
       return <Circle {...iconProps} />;
+    case "triangle":
+      return <Triangle {...iconProps} />;
+    case "line":
+      return <Minus {...iconProps} />;
     case "text":
     case "i-text":
     case "textbox":
@@ -39,6 +47,10 @@ export const LayerItem = ({
   onSelect,
   onToggleVisibility,
   onToggleLock,
+  onMoveUp,
+  onMoveDown,
+  isFirst,
+  isLast,
   isDragging,
   isDropTarget,
   dropPosition,
@@ -60,6 +72,16 @@ export const LayerItem = ({
   const handleLockClick = (e) => {
     e.stopPropagation();
     onToggleLock(layer.id);
+  };
+
+  const handleMoveUpClick = (e) => {
+    e.stopPropagation();
+    onMoveUp?.(layer.id);
+  };
+
+  const handleMoveDownClick = (e) => {
+    e.stopPropagation();
+    onMoveDown?.(layer.id);
   };
 
   const handleDragStart = (e) => {
@@ -111,6 +133,26 @@ export const LayerItem = ({
       </span>
 
       <div className='layer-actions'>
+        <button
+          className='layer-action-btn'
+          onClick={handleMoveUpClick}
+          disabled={isFirst}
+          aria-label='Bring forward'
+          title='Bring forward'
+        >
+          <ChevronUp size={14} />
+        </button>
+
+        <button
+          className='layer-action-btn'
+          onClick={handleMoveDownClick}
+          disabled={isLast}
+          aria-label='Send backward'
+          title='Send backward'
+        >
+          <ChevronDown size={14} />
+        </button>
+
         <button
           className='layer-action-btn'
           onClick={handleVisibilityClick}

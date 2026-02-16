@@ -1,4 +1,4 @@
-import { createContext, useState, useRef, useCallback, useEffect } from "react";
+import { createContext, useEffect, useRef, useState, useCallback } from "react";
 import { useCanvas } from "../hooks/useCanvas";
 import { useCanvasHistory } from "../hooks/useCanvasHistory";
 import { useClipboard } from "../hooks/useClipboard";
